@@ -1,0 +1,2817 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>鑫的方向</title>
+    <link>http://xinlogs.com/</link>
+    <description>Recent content on 鑫的方向</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 16 Feb 2015 14:19:39 +0000</lastBuildDate>
+    
+	<atom:link href="http://xinlogs.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>切换到hexo</title>
+      <link>http://xinlogs.com/post/2015-02-16-hexo/</link>
+      <pubDate>Mon, 16 Feb 2015 14:19:39 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2015-02-16-hexo/</guid>
+      <description>新的一年马上开始了，我的博客程序也有一个新到开始。 从原来到octopress换为了hexo
+hexo采用nodejs开发，速度上比octopress到ruby有很大优势。
+原来每次发布都要等很久，更换到hexo后快了很多。
+同时也希望我2015年能多写点博客，2014年基本很少有时间写下自己到技术文章，2015加油！</description>
+    </item>
+    
+    <item>
+      <title>nginx通过http/1.1访问upstream</title>
+      <link>http://xinlogs.com/post/2014-08-07-nginx-http-1-dot-1-upstream/</link>
+      <pubDate>Thu, 07 Aug 2014 16:03:39 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-08-07-nginx-http-1-dot-1-upstream/</guid>
+      <description>Nginx在做upstream的负载均衡的时候，默认请求后端应用服务器使用的是http/1.0协议。
+单位有个应用在采用nginx做负载均衡后，经常出现一个10s卡住现象。而用浏览器直接访问后端则没有这个问题。通过在后端应用上tcpdump抓包分析，发现nginx提交过来的请求都是http/1.0协议，而浏览器直接过来的是http/1.1协议。
+Nginx初期不支持通过http/1.1协议访问后端应用，直到1.1.4版本后才支持http/1.1协议访问后端。采用http/1.1协议后，因为支持keepalive，可以减少Nginx到后端的连接数。
+##启用http/1.1协议访问upstream 只要在想要启用http/1.1访问的location段加入proxy_http_version和proxy_set_header两项即可。
+location / { proxy_pass http://upstream_domain; proxy_http_version 1.1; proxy_set_header Connection &amp;quot;&amp;quot;; }  </description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.10安装报磁盘空间错误</title>
+      <link>http://xinlogs.com/post/2014-06-14-disk-space-error-while-installing-centos5/</link>
+      <pubDate>Sat, 14 Jun 2014 05:01:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-06-14-disk-space-error-while-installing-centos5/</guid>
+      <description>今天单位的一台HP DL380 G7安装CentOS 5.10的时候出现错误。 因为服务器配了7块1T的磁盘，做了个Raid5以后，大约3.8T。所有采用了GPT分区，安装的时候直接报错了，提示GTP分区问题。 参考了如下网站 http://blog.endpoint.com/2013/11/installing-centos-5-on-3tb-drive.html http://oliverpelz.blogspot.it/2010/09/how-to-install-centos-55-on-any-gpt.html http://richardjh.org/blog/install-centos-large-partitions-using-gpt-disk-layout/
+操作步骤都比较麻烦。因为必须安装CentOS5 不然CentOS 6可以很顺利的。。。
+既然GTP分区不行，就用smart盘引导后重新创建Raid。将一个300G空间创建为逻辑卷，剩下的3T空间另外创建一个。 然后将操作系统安装在300G空间内，系统安装成功后再通过parted对3T磁盘分区。
+结果这次安装过成功又报了如下错误：An error occurred transferring the install image to your hard drive. You are probably out of disk space.
+果断采用ctrl+alt+F3切到命令界面，发现有如下提示：CRITICAL: error transferring stage2.img: [Errno 5] Input/output err
+发现这个错误后，已经可以知道不是因为GTP分区引起的了。而是在stage2.img这个文件传输过程中出现错误。 更换安装介质后，问题得到了解决。</description>
+    </item>
+    
+    <item>
+      <title>linux-rescan-scsi</title>
+      <link>http://xinlogs.com/post/2014-06-05-linux-rescan-scsi/</link>
+      <pubDate>Thu, 05 Jun 2014 02:49:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-06-05-linux-rescan-scsi/</guid>
+      <description>最近单位一台服务器在连接EMC DD 640的时候，没有识别出来对应的scsi设备。这里记录下解决办法，其实就是linux如何在不重启的情况下重新扫描scsi设备。 比如HBA卡插上光纤后，无法识别。或者插上新的scsi盘无法识别，都可以用这个方法解决。
+1、先查看有哪些HBA卡的主机号
+ls /sys/class/fc_host/  2、让系统重新扫描FC总线，大约15秒后可以生效
+echo 1 &amp;gt;/sys/class/fc_host/host0/issue_lip  3、重新扫描host0下的scsi设备
+echo “- – -” &amp;gt; /sys/class/scsi_host/host0/scan  验证
+fdisk -l tail -f /var/log/message  # ls /sys/class/scsi_host  </description>
+    </item>
+    
+    <item>
+      <title>自定义zabbix inventory界面</title>
+      <link>http://xinlogs.com/post/2014-06-05-zabbix-custom-inventory/</link>
+      <pubDate>Thu, 05 Jun 2014 01:58:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-06-05-zabbix-custom-inventory/</guid>
+      <description>Zabbix报警后，点击报警的主机会出现一个host inventory连接。进入host inventory后，可以查看报警主机的一些信息。而Overview内的信息并不多，Details栏内信息又太多了。 我想通过自定义这个Overview将比较关系的操作系统，联系人，硬件位置等信息显示在此页面中.
+通过查看代码，最终发现此页面对应/usr/share/zabbix/include/views目录下的inventory.host.view.php模板文件
+// inventory (OS, Contact, , Hardware, Location) if ($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;]) { if ($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;os&#39;]) { $overviewFormList-&amp;gt;addRow( $this-&amp;gt;data[&#39;tableTitles&#39;][&#39;os&#39;][&#39;title&#39;], new CSpan(zbx_str2links($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;os&#39;]), &#39;text-field&#39;) ); } if ($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;contact&#39;]) { $overviewFormList-&amp;gt;addRow( $this-&amp;gt;data[&#39;tableTitles&#39;][&#39;contact&#39;][&#39;title&#39;], new CSpan(zbx_str2links($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;contact&#39;]), &#39;text-field&#39;) ); } if ($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;hardware&#39;]) { $overviewFormList-&amp;gt;addRow( $this-&amp;gt;data[&#39;tableTitles&#39;][&#39;hardware&#39;][&#39;title&#39;], new CSpan(zbx_str2links($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;hardware&#39;]), &#39;text-field&#39;) ); } if ($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;location&#39;]) { $overviewFormList-&amp;gt;addRow( $this-&amp;gt;data[&#39;tableTitles&#39;][&#39;location&#39;][&#39;title&#39;], new CSpan(zbx_str2links($this-&amp;gt;data[&#39;host&#39;][&#39;inventory&#39;][&#39;location&#39;]), &#39;text-field&#39;) ); } }  其中每一个if段，对应一个信息。我这里分别显示os,contact,hardware和location</description>
+    </item>
+    
+    <item>
+      <title>owncloud打包zip下载文件名乱码</title>
+      <link>http://xinlogs.com/post/2014-04-15-owncloud-zip-filename/</link>
+      <pubDate>Tue, 15 Apr 2014 21:15:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-04-15-owncloud-zip-filename/</guid>
+      <description>最近在单位部署了一套owncloud使用。感觉作为内部网盘使用，效果还是挺好的。 不过今天同事发现，选择多个文件一起下载的时候，会出现乱码问题。 多个文件下载会自动打包成一个zip文件进行下载，下载后的文件在windows机器打开就出现文件名乱码了。
+##解决办法## 网站搜索了下解决办法，基本上是因为打包zip的时候，文件名编码处理问题造成的。
+打包zip主要调用了/var/www/html/owncloud/lib/private/files.php文件
+修改下这个文件，将文件名转为windows可以识别的GBK编码就ok了。
+69行附近
+foreach ($files as $file) { $file = $dir . &#39;/&#39; . $file; if (\OC\Files\Filesystem::is_file($file)) { $tmpFile = \OC\Files\Filesystem::toTmpFile($file); self::$tmpFiles[] = $tmpFile; $u8filename=iconv(&amp;quot;UTF-8&amp;quot;,&amp;quot;GBK&amp;quot;,basename($file)); //for utf8 //$zip-&amp;gt;addFile($tmpFile, basename($file)); $zip-&amp;gt;addFile($tmpFile,$u8filename); } elseif (\OC\Files\Filesystem::is_dir($file)) { self::zipAddDir($file, $zip); } }  200行附近
+public static function zipAddDir($dir, $zip, $internalDir=&#39;&#39;) { $dirname=basename($dir); $dirname=iconv(&amp;quot;UTF-8&amp;quot;,&amp;quot;GBK&amp;quot;,$dirname); //for utf8 $zip-&amp;gt;addEmptyDir($internalDir.$dirname); $internalDir.=$dirname.=&#39;/&#39;; $files=OC_Files::getDirectoryContent($dir); foreach($files as $file) { $filename=$file[&#39;name&#39;]; $file=$dir.&#39;/&#39;.$filename; if(\OC\Files\Filesystem::is_file($file)) { $tmpFile=\OC\Files\Filesystem::toTmpFile($file); OC_Files::$tmpFiles[]=$tmpFile; $filename=iconv(&amp;quot;UTF-8&amp;quot;,&amp;quot;GBK&amp;quot;,$filename); //for utf8 $zip-&amp;gt;addFile($tmpFile, $internalDir.</description>
+    </item>
+    
+    <item>
+      <title>dig排查dns问题</title>
+      <link>http://xinlogs.com/post/2014-04-14-dig-debug-dns-query/</link>
+      <pubDate>Mon, 14 Apr 2014 22:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-04-14-dig-debug-dns-query/</guid>
+      <description>&lt;p&gt;最近单位的某些域名在用联通3g访问的时候，经常有无法解析域名的情况。后来是采用dig逐步排查，解决了问题的。&lt;/p&gt;
+
+&lt;p&gt;##解决问题的思路##
+1、通过ping、dig命令，先判断域名是否可以被解析。&lt;/p&gt;
+
+&lt;p&gt;2、如果只是某些机器不正常，就通过@参数指定dns服务器查询。&lt;/p&gt;
+
+&lt;p&gt;3、如果查询不到解析，就+tcp 采用tcp协议尝试下。&lt;/p&gt;
+
+&lt;p&gt;4、采用+trace通过递归查询，看看那个节点出现的问题&lt;/p&gt;
+
+&lt;p&gt;5、大招，这招还不行就放弃吧&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dig +trace +recurse +all +qr -t NS xinlogs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>多电脑同步octopress</title>
+      <link>http://xinlogs.com/post/2014-04-14-edit-octopress-on-multiple-computers/</link>
+      <pubDate>Mon, 14 Apr 2014 21:30:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-04-14-edit-octopress-on-multiple-computers/</guid>
+      <description>&lt;p&gt;采用markdown编写博客文章，然后通过octopress发布到github上。感觉写博客就像编程一样有意思。
+但是当我们有多台电脑的时候，如何同步呢？或者家里有了octopress环境，单位如何写博客呢？
+下面是我常用的方法
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>zabbix介绍</title>
+      <link>http://xinlogs.com/post/2014-04-08-zabbix-introduction/</link>
+      <pubDate>Tue, 08 Apr 2014 08:59:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-04-08-zabbix-introduction/</guid>
+      <description>&lt;p&gt;Zabbix是一套企业级开源分布式监控软件。可以用来监控网络和服务器的可用性和性能。Zabbix可以根据事件灵活配置邮件和短信报警。Zabbix将监控数据采集到数据库,通过web界面进行展示。&lt;/p&gt;
+
+&lt;p&gt;Zabbix支持被动(polling)和主动（trapping）两种方式获取数据。Zabbix的参数配置、报表、数据展示全部通过web界面完成。&lt;/p&gt;
+
+&lt;p&gt;Zabbix是免费软件，基于GPL v2协议发布。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://farm3.staticflickr.com/2822/13770962555_01b2f89e34_z.jpg&#34; alt=&#34;zabbix&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>备份到阿里云的oss</title>
+      <link>http://xinlogs.com/post/2014-02-09-backup-to-aliyun-oss/</link>
+      <pubDate>Sun, 09 Feb 2014 16:37:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2014-02-09-backup-to-aliyun-oss/</guid>
+      <description>#概述#
+备份一直是个麻烦的问题。备份到本地担心系统坏了导致数据丢失，备份到远程机器成本又有点高。 我的方法是通过ruby下的一个backup gem，来实现定期将mysql数据库和web程序备份到本地的同时，上传到阿里云的oss上。
+##安装##
+###ruby安装###
+通过rvm来安装ruby，首先安装rvm。参考http://rvm.io 网站
+\curl -sSL https://get.rvm.io | bash -s stable  rvm安装后，用如下命令安装ruby
+rvm install ruby  ###安装backup gem###
+gem install backup  ###安装backup-aliyun插件###
+这个插件主要是给backup gem提供可以备份到阿里云oss的功能。 默认的插件依赖carrierwave-aliyun gem，可以上传到杭州站点下的bucket。不支持上传到青岛站点。
+我更新了部分代码，加入了aliyun_area选项。可以支持青岛站点。 安装默认版本
+gem install backup-aliyun  安装我修改后的版本
+git clone https://github.com/babodx/backup-aliyun.git cd backup-aliyun gem build backup-aliyun.gemspec gem install backup-aliyun-0.1.1.gem  ##配置##
+通过backup对数据库和程序文件备份，需要生成配置文件和配置model
+backup generate:config  backup generate:model --trigger my_backup \ --archives --storages=&#39;local&#39; --compressor=&#39;gzip&#39;  编辑Backup/models/my_backup.rb文件，来定义需要备份的内容。具体可以参考http://meskyanichi.github.io/backup/v4/getting-started/ 文档
+我的文件内容如下
+# encoding: utf-8 #引入aliyun备份插件 require &#39;backup-aliyun&#39; Backup::Model.</description>
+    </item>
+    
+    <item>
+      <title>nginx反向代理websockets</title>
+      <link>http://xinlogs.com/post/2013-10-03-nginx-reverse-proxy-websockets/</link>
+      <pubDate>Thu, 03 Oct 2013 11:42:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-10-03-nginx-reverse-proxy-websockets/</guid>
+      <description>&lt;p&gt;有些情况下，部署的服务器是只开80端口的，这个时候如果我们想要ssh怎么弄？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;就是本地开其他端口的web ssh client，然后通过nginx的80端口反向代理。这个一般都需要走webscokets的，下面我就把我折腾的东西记录下。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;##web client的选择##&lt;/p&gt;
+
+&lt;p&gt;我是用了一个基于python技术，html5，websockets实现的web界面ssh客户端。&lt;a href=&#34;https://github.com/liftoff/GateOne&#34;&gt;!GateOne&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;其实还有一款也不错 ［!Guacamole］(&lt;a href=&#34;http://guac-dev.org/),这个是基于java技术实现的，可以实现VNC,RDP,SSH协议的客户端。&#34;&gt;http://guac-dev.org/),这个是基于java技术实现的，可以实现VNC,RDP,SSH协议的客户端。&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;##GateOne安装##&lt;/p&gt;
+
+&lt;p&gt;安装很简单，我是在debian下的环境安装的。&lt;/p&gt;
+
+&lt;p&gt;我主要参考了&lt;a href=&#34;http://liftoff.github.io/GateOne/About/index.html#installation&#34;&gt;http://liftoff.github.io/GateOne/About/index.html#installation&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;###大概步骤###&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>iterm2给ssh窗口上色</title>
+      <link>http://xinlogs.com/post/2013-10-02-iterm2gei-sshchuang-kou-shang-se/</link>
+      <pubDate>Wed, 02 Oct 2013 21:58:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-10-02-iterm2gei-sshchuang-kou-shang-se/</guid>
+      <description>&lt;p&gt;#给iterm2的ssh窗口上颜色#&lt;/p&gt;
+
+&lt;p&gt;经常开ssh登陆远程服务器，有时自己都分不清那个是远程那个是本地了。&lt;/p&gt;
+
+&lt;p&gt;今天看到一个技巧，可以让iterm2 给ssh到远程的窗口上个颜色。这样一看颜色就知道不是本地了。&lt;/p&gt;
+
+&lt;p&gt;首先就是编辑~.zshrc文件,在末尾加入&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;source iterm2.zsh
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后在用户目录创建一个iterm2.zsh文件，内容如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;tab-color() {
+  echo -ne &amp;quot;\033]6;1;bg;red;brightness;$1\a&amp;quot;
+  echo -ne &amp;quot;\033]6;1;bg;green;brightness;$2\a&amp;quot;
+  echo -n
+}
+
+tab-reset() {
+  echo -ne &amp;quot;\033]6;1;bg;*;default\a&amp;quot;
+}
+
+color-ssh() {
+  if [[ -n &amp;quot;$ITERM_SESSION_ID&amp;quot; ]]; then
+    trap &amp;quot;tab-reset&amp;quot; INT EXIT
+    if [[ &amp;quot;$*&amp;quot; =~ &amp;quot;production|ec2-.*compute-1&amp;quot; ]]; then
+      tab-color 255 0 0
+    else
+      tab-color 0 255 0
+    fi
+  fi
+  ssh $*
+}
+compdef _ssh color-ssh=ssh
+alias ssh=color-ssh
+
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>一次入侵检查</title>
+      <link>http://xinlogs.com/post/2013-10-02-yi-ci-ru-qin-jian-cha/</link>
+      <pubDate>Wed, 02 Oct 2013 21:38:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-10-02-yi-ci-ru-qin-jian-cha/</guid>
+      <description>&lt;p&gt;#10.1放假期间的一次入侵处理#&lt;/p&gt;
+
+&lt;p&gt;今天一个网站的朋友给我电话，说网站无法访问了。我尝试访问了下，提示数据库不存在。开始以为数据库出现问题了，尝试访问子域名无问题。ssh上去看到数据库正常。
+检查文件的时候，发现mysql_config.php是早上6点多修改过的。比较奇怪了。&lt;/p&gt;
+
+&lt;p&gt;打开mysql_config.php发现已经被清空了。于是赶紧处理下，让网站恢复了正常。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>update git</title>
+      <link>http://xinlogs.com/post/2013-09-30-update-git/</link>
+      <pubDate>Mon, 30 Sep 2013 10:01:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-09-30-update-git/</guid>
+      <description>#问题#
+朋友架设了一个gitlab，很适合内部使用。但是当我从服务器上想把salt的配置push上去的时候，一直失败。测试了下，clone也是失败的。
+提示如下
+error: The requested URL returned error: 401 Unauthorized while accessing http://x.x.x.x  ##解决##
+经过各种尝试后发现，本地git的版本在1.8的没有问题。而我CentOS 6.4的下面是1.7.1，clone的时候就是不提示用户名和密码。直接报验证错误了。
+###更新git步骤###
+cd ~/Downloads su yum -y install zlib-devel openssl-devel cpio expat-devel gettext-devel curl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker exit wget -O v1.8.1.2.tar.gz https://github.com/git/git/archive/v1.8.1.2.tar.gz tar -xzvf ./v1.8.1.2.tar.gz cd git-1.8.1.2/ su make prefix=/usr/local all make prefix=/usr/local install exit  更新后,验证下版本
+[root@salt-master test]# git --version git version 1.8.1.2  </description>
+    </item>
+    
+    <item>
+      <title>Ruby采用ActiveRecord方式访问Mysql</title>
+      <link>http://xinlogs.com/post/2013-08-12-ruby-with-activerecord-access-mysql/</link>
+      <pubDate>Mon, 12 Aug 2013 11:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-08-12-ruby-with-activerecord-access-mysql/</guid>
+      <description>&lt;p&gt;前段时间一个朋友的DZ论坛因为误操作导致部分帖子被删除，因为发现的比较晚，所以再删除后已经有很多新帖子被发布了。所以就无法简单的还原到帖子被删除的某个时间点，因为这样就会造成数据库回档，很多新的帖子将消失。&lt;/p&gt;
+
+&lt;p&gt;我想到的处理办法就是采用一个删除点前的备份恢复到一个新表中，然后用程序判断被删除的帖子导入到现在的数据库中。而最近一直比较迷恋ruby的我，理所当然就采用ruby来写了。&lt;/p&gt;
+
+&lt;p&gt;ruby直接访问mysql可以采用mysql2这个gem，但是我发现居然不支持预编译sql语句，导致一些帖子里的特殊字符无法处理。后来就采用了ruby直接加载ActiveRecord的方法来处理。下面就是我最后的代码了。&lt;/p&gt;
+
+&lt;p&gt;下面这个代码是为了修复数据导入后，DZ里面两个表直接关联错误，导致的某些版块显示不正常的问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>mac下的secureCRT如何保存密码？</title>
+      <link>http://xinlogs.com/post/2013-05-06-securecrt-for-mac-store-password/</link>
+      <pubDate>Mon, 06 May 2013 11:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-05-06-securecrt-for-mac-store-password/</guid>
+      <description>mac下面的secureCRT默认保存不上密码，我们选择了保存密码后，下次登录还是提示密码错误。
+解决办法： 因为secureCRT默认采用mac的keychain来处理密码，所以会出现这个问题。我们只需要去掉这个选项即可正常。
+打开secureCRT后，按&amp;rdquo;command+,&amp;rdquo; 在&amp;rdquo;advanced&amp;rdquo;里面去掉&amp;rdquo;Use Keychain&amp;rdquo;的选项即可。</description>
+    </item>
+    
+    <item>
+      <title>digitalocean-vps</title>
+      <link>http://xinlogs.com/post/2013-04-29-digitalocean-vps/</link>
+      <pubDate>Mon, 29 Apr 2013 10:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-04-29-digitalocean-vps/</guid>
+      <description>&lt;p&gt;##Digitalocean debian6 vps测试##&lt;/p&gt;
+
+&lt;p&gt;最近又折腾了一次VPS。 原来一直使用的是vpsee.com提供的最低配置VPS。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;1 core CPU&lt;/li&gt;
+&lt;li&gt;256 MB 内存&lt;/li&gt;
+&lt;li&gt;256 MB 交换&lt;/li&gt;
+&lt;li&gt;10 GB 硬盘&lt;/li&gt;
+&lt;li&gt;160 GB 流量&lt;/li&gt;
+&lt;li&gt;1 IP&lt;/li&gt;
+&lt;li&gt;5 机房可选&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;费用 $10/月&lt;/p&gt;
+
+&lt;p&gt;再来看看我最近选择的digitalocean的vps&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;512MB / 1 CPU&lt;/li&gt;
+&lt;li&gt;20GB SSD Disk&lt;/li&gt;
+&lt;li&gt;地点：New York  Amsterdam  San Francisco&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;费用  $5/月&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>nginx支持thinkphp的pathinfo模式</title>
+      <link>http://xinlogs.com/post/2013-04-25-nginxzhi-chi-thinkphpde-pathinfomo-shi/</link>
+      <pubDate>Thu, 25 Apr 2013 15:06:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-04-25-nginxzhi-chi-thinkphpde-pathinfomo-shi/</guid>
+      <description>最近帮助一个朋友迁移系统。原有系统是www.pinphp.com开发的一套淘宝客程序，跑在Win03服务器上。因为ddos攻击、性能问题等原因，找我迁移到Linux系统下。
+首先我推荐的组合当然是现在流行的Ningx+php-fpm模式。便于优化而且效率很高。
+部署的过程中遇到的问题就是伪静态无法生效。一些带中文的url无法正常处理等。
+后来看代码发现pinphp这套代码是基于thinkphp框架开发。而thinkphp框架采用一种pathinfo的伪静态模式。而nginx本身是不支持pathinfo模式的，要是通过修改fastcgi 参数来支持，可以实现但是会有安全隐患。
+什么是pathinfo呢？
+因为thinkphp框架要求所有请求都要通过入口文件来转发，所以任何请求都是到index.php后才转发的。为了url好看和便于seo。就产生了pathinfo了，就是我们比如想访问index.php?s=book这样的url，可以直接访问index.php/book. 其实也可以看做是一种特殊的伪静态。index.php后面的url部分作为参数传递给index.php来处理。
+nginx要如何处理
+index.php/book 这种类型url nginx无法很好处理，而且非要通过pathinfo处理可以，但是会有安全隐患问题。
+thinkphp文档里的解决办法是采用伪静态，把全部url转发给index.php?s=来处理。 下面就是我在nginx里的转发规则
+if (!-e $request_filename) { rewrite ^(.*)$ /index.php?s=$1 last; break; }  这样/目录后面的url部分就当作index.php?s的参数来处理了。可以完美解决pathinfo问题。而且这样处理后，中文url也可以正常执行了。</description>
+    </item>
+    
+    <item>
+      <title>centos5.5安装rails环境</title>
+      <link>http://xinlogs.com/post/2013-04-02-centos5-dot-5an-zhuang-railshuan-jing/</link>
+      <pubDate>Tue, 02 Apr 2013 13:10:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-04-02-centos5-dot-5an-zhuang-railshuan-jing/</guid>
+      <description>最近招生需要写一个考试结果查询程序，就用rails来写了。以前一直java、php的，发现rails的高效开发以后，就打算尝试下。 程序写好后，就开始考虑服务器的问题了。我手边就只有centos的系统，也直到ubuntu和debian对于rails来说有好点。但是现实总是残酷的。。。
+##安装EPEL 因为系统为centos 5.5 所以很多现在流行的软件包都没有。所以采用epel来安装。
+wget http://dl.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm rpm -ivh epel-release-5-4.noarch.rpm  有了epel以后，就可以安装一些需要的软件包了。
+##安装git git直接用yum install git 就可以顺利安装了
+##安装rvm
+echo insecure &amp;gt;&amp;gt; ~/.curlrc curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile rvm list  ##安装ruby
+rvm install 1.9.3  安装的时候可能会因为系统缺少一些软件包而提示错误。根据提示安装对应软件包就可以了。 我这里是提示缺少libyaml-devel和libffi-devel俩个
+yum install libyaml-devel yum install libffi-devel  安装完成后，设置下默认的ruby版本
+rvm use 1.9.3 --default  有了这些，就可以直接用gem来安装rails了
+##安装Rails
+gem install rails  ##小结 上面安装基本很顺利，就是用rvm安装ruby的时候可能会提示确认支持的软件包。根据提示安装上就可以了。</description>
+    </item>
+    
+    <item>
+      <title>rails-best-practices-2</title>
+      <link>http://xinlogs.com/post/2013-03-16-rails-best-practices-2/</link>
+      <pubDate>Sat, 16 Mar 2013 10:23:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-03-16-rails-best-practices-2/</guid>
+      <description>&lt;p&gt;#SCOPE IT OUT&lt;/p&gt;
+
+&lt;p&gt;和前面一样，让我们先来看一段“SAD CODE”。&lt;/p&gt;
+
+&lt;p&gt;/app/controllers/tweets_controller.rb&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;def index
+  @tweets = Tweet.find(
+              :all,
+              :conditions =&amp;gt; {:user_id =&amp;gt; current_user.id},
+              :order =&amp;gt; &#39;created_at desc&#39;,
+              :limit =&amp;gt; 10
+             )
+  @trending = Topic.find(
+                :all,
+                :conditions =&amp;gt; [&amp;quot;started_trending &amp;gt; ?&amp;quot;, 1.day.ago],
+                :order =&amp;gt; &#39;mentions desc&#39;,
+                :limit =&amp;gt; 5
+               )
+  ...
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们先来看看@tweets获取这部分，代码是想取得当前用户下面的10条tweet并按照创建时间排序。&lt;/p&gt;
+
+&lt;p&gt;通过在model里定义scope来将排序条件转移到model，并且优化上面代码为如下样子：
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>rails-best-practices-1</title>
+      <link>http://xinlogs.com/post/2013-03-16-rails-best-practices-1/</link>
+      <pubDate>Sat, 16 Mar 2013 09:43:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-03-16-rails-best-practices-1/</guid>
+      <description>&lt;p&gt;#FAT MODEL,SKINNY CONTROLLER#&lt;/p&gt;
+
+&lt;p&gt;最近看了codeschool的教程，打算把里面讲解的rails best practices总结下。&lt;/p&gt;
+
+&lt;p&gt;视频里的第一部分就是讲解的Fat model，skinny controller。我理解的就是要尽量把业务代码写到model中，而controller要尽量的简单。&lt;/p&gt;
+
+&lt;p&gt;第一个例子是tweets_controller.rb的代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;class TweetsController &amp;lt; ApplicationController
+  def retweet
+    tweet = Tweet.find(params[:id])
+
+    if tweet.user == current_user
+      flash[:notice] = &amp;quot;Sorry, you can&#39;t retweet your own tweets&amp;quot;
+    elsif tweet.retweets.where(:user_id =&amp;gt; current_user.id).present?
+      flash[:notice] = &amp;quot;You already retweeted!&amp;quot;
+    else
+      t = Tweet.new
+      t.status = &amp;quot;RT #{tweet.user.name}: #{tweet.status}&amp;quot;
+      t.original_tweet = tweet
+      t.user = current_user
+      t.save
+      flash[:notice] = &amp;quot;Succesfully retweeted&amp;quot;
+    end
+
+    redirect_to tweet
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的代码就是所谓的“SAD CODE”，并不理想。最佳实践里好的代码，被codeschool称作“HAPPY CODE”,很有意思。&lt;/p&gt;
+
+&lt;p&gt;下面我们看看上面的代码该如何实现“HAYYP CODE”，首先要把一部分代码转移到tweet model里，然后上面的代码变成如下样子
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>rails中文问题</title>
+      <link>http://xinlogs.com/post/2013-03-14-railszhong-wen-wen-ti/</link>
+      <pubDate>Thu, 14 Mar 2013 10:56:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-03-14-railszhong-wen-wen-ti/</guid>
+      <description>&lt;p&gt;##rails controller中的中文问题&lt;/p&gt;
+
+&lt;p&gt;在ruby 1.9环境中，如果controller里出现中文，就会报错。报错如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;invalid multibyte char (US-ASCII)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;解决办法：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在这个controller的文件开头加入如下语句&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#encoding: utf-8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;##rails validates的中文问题&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>快速配置vim和macvim</title>
+      <link>http://xinlogs.com/post/2013-03-03-kuai-su-pei-zhi-vimhe-macvim/</link>
+      <pubDate>Sun, 03 Mar 2013 14:41:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-03-03-kuai-su-pei-zhi-vimhe-macvim/</guid>
+      <description>vim以为需要安装各种插件和配置好vimrc才能适合我们开发使用。如果默认只安装vim不用任何插件，并不好用。
+以前写过一篇配置gvim，那个时候还是手动安装各种差距和写vimrc
+现在已经开始采用vundle来管理vim插件了。而且平台也换mac了。
+mac下面自带了vim 7.3 但是我们在mac的图形界面下面还是原因使用macvim。所以要先安装上macvim。
+brew install macvim  安装vim套件
+所谓vim套件其实就是一些高手整理好的vimrc和配色方案，然后通过vundle来安装上vimrc里面需要的各种插件。来达到快速让vim达到一个很好使用和适合开发的程度。
+我使用的是vundle-vimfiles项目，先抓一份文件到自己本地。
+如果你很浏览自己原来的.vim，那就先备份一下。我是直接删除了。呵呵
+切换到自己的目录cd ~
+git代码到自己本地
+git clone git://github.com/ywjno/vundle-vimfiles.git  用vundle-vimfiles文件夹链接到~/.vim
+ln -s vundle-vimfiles ~/.vim  然后将vundle-vimfiles项目里的vimrc文件链接到~/.vimrc，vundle-vimfiles项目给我们提供了几个版本的vimrc，例如vimrc、easy-vimrc、gvimrc
+我这里在console下面用vim，一般看代码还是喜欢用macvim打开。所以我用了两个配置文件。
+链接到console下的vim配置文件
+ln -s ~/.vim/vimrc ~/.vimrc  链接到macvim的配置文件
+ln -s ~/.vim/gvimrc ~/.gvimrc  最后我们安装好Vundle项目来帮助我们安装vimrc里面需要的各种vim plugin
+git clone git://github.com/gmarik/vundle.git ~/.vim/bundle/vundle  安装后，我们进入vim通过vundle来继续安装需要的各种plugin。进入vim后，输入如下命令安装插件
+:BundleInstall  如果以后想更新插件，主要输入:BundleInstall!
+调整配色
+我的配色喜欢solarized_light，编辑~/.gvimrc在前面加入:colorscheme solarized_light
+这样打开也就3-5分钟我们就完全配置好我们的vim编辑器了</description>
+    </item>
+    
+    <item>
+      <title>emlog迁移到octopress</title>
+      <link>http://xinlogs.com/post/2013-02-28-emlogqian-yi-dao-octopress/</link>
+      <pubDate>Thu, 28 Feb 2013 17:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-02-28-emlogqian-yi-dao-octopress/</guid>
+      <description>&lt;p&gt;用emlog的博客系统已经有2年了，本着活着就要折腾的原则。最近开始尝试使用octopress，这个博客还真的很适合技术人员。通过github版本控制，采用自己最喜欢的编辑器本地写博客，&lt;code&gt;rake deploy&lt;/code&gt;发布。&lt;/p&gt;
+
+&lt;p&gt;目前我原来的博客100多篇都迁移到octopress里了，不过因为原来的图片都存放在本地，这次打算全部存放到flickr.com了。这部分只能手动整理了。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git-first-on-ubuntu</title>
+      <link>http://xinlogs.com/post/2013-02-24-git-first-on-ubuntu/</link>
+      <pubDate>Sun, 24 Feb 2013 08:29:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-02-24-git-first-on-ubuntu/</guid>
+      <description>#ubuntu 12.10下初次使用git 前些时候在mac下面使用了git，感觉很棒。今天在单位安装了一台ubuntu 12.10的桌面系统，也开始尝试用git的方式来写blog。
+##安装 ubuntu下面安装git非常容易。 sudo apt-get install git-core
+然后对git进行全局设置 git config user.name &amp;ldquo;yourname&amp;rdquo; git config user.email &amp;ldquo;youremail&amp;rdquo; 设置后用下面命令可以查看 git config -l</description>
+    </item>
+    
+    <item>
+      <title>我2013年学习列表</title>
+      <link>http://xinlogs.com/post/2013-02-20-wo-2013nian-xue-xi-lie-biao/</link>
+      <pubDate>Wed, 20 Feb 2013 13:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-02-20-wo-2013nian-xue-xi-lie-biao/</guid>
+      <description>&lt;p&gt;#2013学习计划&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>开始使用octopress</title>
+      <link>http://xinlogs.com/post/2013-02-13-kai-shi-shi-yong-octopress/</link>
+      <pubDate>Wed, 13 Feb 2013 14:54:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-02-13-kai-shi-shi-yong-octopress/</guid>
+      <description>&lt;p&gt;#概述#
+最近在看&lt;a href=&#34;http://ruby-china.org&#34;&gt;ruby-china.org&lt;/a&gt;和&lt;a href=&#34;http://happycasts.net&#34;&gt;happycasts.net&lt;/a&gt;的视频。开始尝试使用git来做版本控制。原来都是使用svn，所以最近一直在折腾和学习。看到很多编程人员都开始采用octopress来代替wordpress写blog了。我也开始尝试使用这个octopress的blog系统。&lt;/p&gt;
+
+&lt;p&gt;octopress是一套基于ruby构建的blog管理系统，通过git来为我们的文章做版本控制，并且通过rake命令可以简单的完成博客的发布与远程站点的同步。配合github提供的pages功能，我们连自己的主机都可以省了。非常方便。
+
+##新建文章##
+写文章只要进入到我们的octopress目录下，输入下面命令就可以创建一个新的blog文章。
+    rake new_post[title]
+其中title就是你文章的标题，可以根据自己实际情况填写。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>cloudstack on vmware</title>
+      <link>http://xinlogs.com/post/2013-02-02-cloudstack-on-vmware/</link>
+      <pubDate>Sat, 02 Feb 2013 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-02-02-cloudstack-on-vmware/</guid>
+      <description>很久没写博客了，总是犯懒。。。。
+最近在玩cloudstack和python、django啥的。
+上周参加了北京举行的cloudstack技术沙龙，收获很大。这两天在自己笔记本上开始折腾cloudstack玩，写下自己的方法和大家分享下。
+我主要是分享下如何通过vmware的嵌套虚拟化，在一台自己的笔记本上跑起来cloudstack。这样手边没有服务器的朋友也可以先看看cloudstack到底什么样子了。
+因为cloudstack还是很吃资源的，我先说下我的硬件吧。
+我的笔记本 CPU i7-3520M 内存4G 装的64位 win7
+主要是cpu支持虚拟化技术，并且内存越大越好
+本来我是用的virtualBOX的，因为devcloud2需要virtualbox来跑。但是virtualbox不支持嵌套虚拟化，所以无法胜任cloudstack的运行环境。我换了vmware workstation 9.
+本来cloudstack文档里的最小配置是2台机器，一台跑管理程序和NFS存储，一台跑虚拟化。但是社区里发布了一个一键安装版本，将这些都整合到一个CentOS 6.3的系统下了，用的kvm的虚拟化技术。
+下面说说我的步骤：
+首先在vmware里创建一个虚拟机，Guest operating system选择Linux下的Red Hat Enterprise Linux 6 64-bit。
+虚拟机的内存我给分配了2936M，这个数值是vmware建议的最大分配内存了（宿主4G内存情况下）。
+cpu我分配了2个core
+注意：Processors设置的时候，已经要勾选下面的Virtualize Intel VT-x/EPT or AMD-V/RVI选项。
+通过上面截图可以看到Device里面没用的设备也全部删掉，只保留必要的设备。
+网卡配置为Host-only模式
+然后我们还要修改下win7下面vmnet1的网卡IP设置，因为一键安装的cloudstack默认使用192.168.16.10这个IP。而这个IP关联到很多配置不能随意修改，所以我们只能修改本机的IP来访问192.168.16这个网段了。
+这样基本环境就配置好。
+然后放入一键安装光盘或者加载ISO来安装cloudstack就可以了。光盘启动后只要选择默认的第一项就可以等待了，全部自动安装，大约20-30分钟就完成了。
+系统自动重启后，再次进入系统。我们就可以通过win7下的浏览器访问http://192.168.16.10:8080/client这个管理界面了。默认的用户名密码为admin/password
+进入后会见到如下界面
+主机警报里会出现一个关于nfs的警报，常规警报里也会出现一些。我这个截图已经跑了一个实例了，所以默认安装的可能和这个截图不太一样。
+什么都不需要设置，包括cidr也不需要设置了。
+全局设置就保持默认的就可以了
+去基础架构界面看下，两台系统VM启动正常就可以了
+注意：如果没有启动实例的时候，虚拟路由器是0.
+接下来我们就可以部署一个自己的虚拟机实例了，这个一键安装里自带了一个centos的模版。
+通过实例界面一步一步创建就可以。不要分配太大的内存，要不会因为资源不足导致创建失败，毕竟我们是在vmware嵌套的虚拟环境下弄的。
+创建后，如果一切正常就会看到新创建的实例已经启动了。如果有错误，可以查看/var/log/cloud/management/management-server.log日志文件。
+状态会有Creating-&amp;gt;Starting-&amp;gt;Running
+cloudstack很强大涉及的知识也很广。如果要在实际生产中使用，还要熟悉很多方面的内容。慢慢学习了。。。。
+大家如果对cloudstack感兴趣，可以加入www.cloudstack-china.org获取更多资料和帮助。
+也可以加入cloudstack-china的qq群（群 号:236581725）
+最后感谢qq群和邮件列表内回答我问题的朋友，是他们帮我解决了实例无法启动的问题和告诉我如何查看日志等。</description>
+    </item>
+    
+    <item>
+      <title>批量部署系统方案</title>
+      <link>http://xinlogs.com/post/2013-01-22-installation-server/</link>
+      <pubDate>Tue, 22 Jan 2013 19:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2013-01-22-installation-server/</guid>
+      <description>最近单位一直弄刀片服务器，7个笼子，112片。安装系统是个麻烦的事情，如果单机安装，太痛苦了。 所以就尝试了批量部署系统。 主要是分Linux和Windows两种方案
+我这里Linux是CentOS。 采用了cobbler来做批量部署。
+Windows采用的是win 2008的部署服务，就是WDS来做批量部署。
+这样Linux做一台分发服务器，Windows做一台WDS服务器，需要部署那种系统就开那台服务器就可以了。
+所有刀片全部采用pxe来引导就可以了。 具体方法就先不写了，以后再补上吧 </description>
+    </item>
+    
+    <item>
+      <title>mac下配置php调试环境</title>
+      <link>http://xinlogs.com/post/2012-08-10-mac-xdebug-netbeans-config/</link>
+      <pubDate>Fri, 10 Aug 2012 16:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-08-10-mac-xdebug-netbeans-config/</guid>
+      <description>已经用了mac有2个月了，基本网络管理和开发工作都在mac下面了。
+下面说下如何配置mac下面的php调试环境
+我的环境：
+ macbook air 2012款
+ Mac OS X 10.8 系统 php环境：XAMPP 1.7.3 开发工具：一般用sublime text 2，调试或者项目开发用netbeans  下面说说如何安装调试环境，主要就是xdebug的安装和配置
+这里需要提下mac下面的安装包管理工具homebrew
+我就是用brew来安装xdebug的。homebrew是一个用ruby开发的，类似macport的工具。可以在线安装软件，就像linux下的apt-get或者yum一样。
+安装homebrew
+需要系统可以支持ruby，通过ruby -v命令可以查看ruby版本。mac os 自带ruby
+直接在终端里输入
+ruby &amp;lt;(curl -fsSk https://raw.github.com/mxcl/homebrew/go)  上面命令执行完，brew命令就可以执行了。
+先运行brew doctor测试下环境是否完整，如果需要，还要添加Command Line Tools。
+添加Command Line Tools
+打开Xcode，在preferences-&amp;gt;downloads里面下载并安装Command Line Tools
+一切正确的话，执行brew doctor显示如下
+babomatoMacBook-Air:~ babo$ brew doctor Your system is raring to brew.  安装好brew后，先执行brew update更新下软件包的源，然后再加载两个formula的资源
+brew update brew tap josegonzalez/homebrew-php brew tap homebrew/dupes  完成后，就可以通过brew search和brew install来查找并安装软件了</description>
+    </item>
+    
+    <item>
+      <title>批量更换115网盘链接</title>
+      <link>http://xinlogs.com/post/2012-08-08-update-115disk-urls/</link>
+      <pubDate>Fri, 10 Aug 2012 14:31:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-08-08-update-115disk-urls/</guid>
+      <description>今天115网盘关闭了对外分享链接的功能。我的客户有人是用115网盘作为服务器资源存储用的，网站上下载资源都是采用115网盘地址来发布的。这样直接造成全部资源都无法下载了，我临时写了个php脚本来更新全部的115网盘链接到本地服务器地址。 主要思路：
+首先将网盘里的资源全部下载到服务器，然后导出一个网盘地址和文件实际名字的列表
+如下所示：
+http://115.com/file/e78cpfjd#Dark_Room.rar http://115.com/file/e78cpwkh#Dark_Energy.rar  可以看到前面是网盘下载的url，＃号后面是实际的文件名。
+我将这个列表保存在一个文件里，便于php脚本获取。
+然后编写一个php脚本，把文件里每行的url取出来，到数据库里把这个下载链接替换为我们服务器上的地址。主要是采用mysql的replace函数实现 脚本如下：
+#!/usr/bin/php &amp;lt;?php print(&amp;quot;=======fix_url v1=========\n&amp;quot;); print(&amp;quot;=======write by babodx@gmail.com=======\n&amp;quot;); function update_url($url) { list($url_115,$url_tv1926)=explode(&amp;quot;#&amp;quot;,$url); $url_tv1926=&amp;quot;http://xiazai.tv1926.com/&amp;quot;.$url_tv1926; print(&amp;quot;update:&amp;quot;); print($url_115); print(&amp;quot;&amp;gt;&amp;gt;&amp;quot;); $link = mysql_connect(&#39;localhost&#39;, &#39;username&#39;, &#39;passwd&#39;); if (!$link) { die(&#39;Could not connect: &#39; . mysql_error()); } mysql_select_db(&#39;my_database&#39;, $link) or die (&#39;Can\&#39;t use my_database : &#39; . mysql_error()); $sql=&amp;quot;update p8_article_content_101 set my_801=replace(my_801,&#39;&amp;quot;.$url_115.&amp;quot;&#39;,&#39;&amp;quot;.$url_tv1926.&amp;quot;&#39;)&amp;quot;; mysql_query(&amp;quot;set names gbk&amp;quot;); $result = mysql_query($sql) or die(&amp;quot;Invalid query: &amp;quot; . mysql_error()); mysql_close($link); print($url_tv1926); print(&amp;quot;\n&amp;quot;); } if (is_null($argv[1])) { print(&amp;quot;argv1 is null\n&amp;quot;); exit(); } $file_name=$argv[1]; print(&amp;quot;get files name.</description>
+    </item>
+    
+    <item>
+      <title>debian6.0.5(squeeze)安装配置xen-4.0虚拟化</title>
+      <link>http://xinlogs.com/post/2012-08-06-debian-xen-install/</link>
+      <pubDate>Mon, 06 Aug 2012 17:50:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-08-06-debian-xen-install/</guid>
+      <description>#系统安装#
+我是通过http://mirrors.163.com下载的 debian-6.0.5-amd64-CD-1.iso 最小安装有一张CD就可以了，安装的是debian6.0.5(squeeze) 64位版本
+安装没啥好说的，最小化安装，除了基本系统就多选择了一个ssh server。
+安装好系统后，进入系统首先设置网卡，不要用dhcp选择static模式 编辑/etc/network/interfaces文件如下
+# The loopback network interfaceauto lo iface lo inet loopback # The primary network interface #allow-hotplug eth0 auto eth0 iface eth0 inet static address 192.168.1.10 netmask 255.255.255.0 broadcast 192.168.1.255 network 192.168.1.0 gateway 192.168.1.1  我这里只有一个eth0网卡，采用192.168.1.10的IP地址
+接下来修改apt的源，采用mirrors.163.com提供的服务器，这样速度比较快 修改/etc/apt/sources.list 内容如下
+deb http://mirrors.163.com/debian/ squeeze main non-free contrib deb http://mirrors.163.com/debian/ squeeze-proposed-updates main non-free contrib deb-src http://mirrors.163.com/debian/ squeeze main non-free contrib deb-src http://mirrors.163.com/debian/ squeeze-proposed-updates main non-free contrib  执行apt-get update更新源</description>
+    </item>
+    
+    <item>
+      <title>nginx通过轮询避免php-fpm引起的502错误</title>
+      <link>http://xinlogs.com/post/2012-08-01-solve-nginx-502-mistakes/</link>
+      <pubDate>Wed, 01 Aug 2012 13:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-08-01-solve-nginx-502-mistakes/</guid>
+      <description>##问题背景##
+最近客户的一个网站总是偶尔出现502错误
+网站架构采用的就是nginx 1.0.10+php 5.3.8+php-fpm模式
+##问题分析##
+首先要检查下php-fpm的进程数使用情况
+netstat -napo |grep &amp;quot;php-fpm&amp;quot; | wc -l  如果这个查询出来的数量接近了你在php-fpm.conf里设置的数量，说明是进程数量不过用了。果断增加
+而我这次碰到的不是这个。继续分析
+会不会是php程序执行时间过长造成超时？
+这个可以通过我的另外一篇文章来查看[php-fpm查找php慢速代码]
+如果是这个问题，我们可以通过修改nginx.conf和php-fpm.conf里面相关的超时设置来解决
+nginx.conf里面主要是如下
+fastcgi_connect_timeout 300; fastcgi_send_timeout 300; fastcgi_read_timeout 300;  php-fpm.conf里如要是如下
+request_terminate_timeout = 10s  很不幸，我碰到的也不是这个问题
+接着我开始分析是不是fastcgi缓存不够？
+主要是在nginx.conf配置里修改如下参数
+fastcgi_buffer_size 64k; fastcgi_buffers 4 64k; fastcgi_busy_buffers_size 128k  这个我还真不清楚要设置多大合适，网站说这个配置小了，有可能引发502.
+##终极解决办法##
+既然上面的常规办法不能解决，那我就想其他办法了。可以肯定的是502引起肯定是因为php-fpm引发的，也就是nginx将正确的客户端请求发给了后端的php-fpm进程，但是因为php-fpm进程的问题导致不能正确解析php代码。最终返回给了客户端502错误。
+我觉得nginx既然upstream可以支持多组后端服务器轮询实现简单的负责均衡，并且可以做简单的健康检查。那我就用这个办法开多组php-fpm服务来实现一个php-fpm池，让nginx在这个php-fpm资源里通过stream轮询。
+因为有了健康检查机制，这样就可以在错误到达客户端前换另外一个php-fpm进程重新解析了。
+###主要配置方法###
+先修改php-fpm.conf来开启多组php-fpm进程
+我这里开启了php-cgi_www1和php-cgi_www2两组
+[www1] listen = /tmp/php-cgi_www1.sock user = www group = www pm = dynamic pm.max_children = 128 pm.start_servers = 32 pm.</description>
+    </item>
+    
+    <item>
+      <title>快速提升app store下载速度</title>
+      <link>http://xinlogs.com/post/2012-07-29-accelerate-app-store-download/</link>
+      <pubDate>Sun, 29 Jul 2012 10:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-29-accelerate-app-store-download/</guid>
+      <description>前两天开始更新MAC OS Mountain Lion。
+为了下载这个4.5G的内容，可是郁闷坏了。计算出来的剩余时间7天。
+于是开始找加速下载的办法，看来一些帖子以后基本知道了下载速度主要取决与dns将你的请求解析到哪台服务器。
+网上一般是都是基于自己找到一台快速的下载服务器IP，然后手动修改/etc/hosts文件的办法。 但是其实看原来就知道，如果我们设置的DNS得当，就能起到从最快服务器下载的目的。
+于是我查到了http://dns.v2ex.com/这个网站，但是使用这个dns后，速度依然很慢。
+后来又在www.weiphone.com找到了一个台湾的DNS。设置后速度大幅提升。 如果你也在北京、也用歌华有线。
+试试下面这个台湾的DNS吧 168.95.1.1  </description>
+    </item>
+    
+    <item>
+      <title>2012 macbook Air 使用华为E1750 3g上网卡</title>
+      <link>http://xinlogs.com/post/2012-07-23-macbook-air-use-e1750-3g-mobilecard/</link>
+      <pubDate>Mon, 23 Jul 2012 14:35:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-23-macbook-air-use-e1750-3g-mobilecard/</guid>
+      <description>最近一直在摸索macbook air的使用方法，目前大部分工作都已经可以放弃windows了。
+今天又将华为的E1750上网卡在macbook air上正确安装了。
+我的3g上网卡如下
+这个上网卡是09年的，现在直接插入usb后，macbook air没有任何反应。
+安装方法：
+1、首先要在Windows机器上更新固件
+先在windows机器安装mobile_card_driver驱动。
+然后再到华为主页下载固件更新程序
+E1750 WINMACB300D00SP05C112(UTPS11.301.08.30.112_MAC11.301.06.13.112)(China Unicom)(05019744)
+将上网卡插入windows的usb接口，可以被驱动正确识别以后，运行固件更新程序开始更新固件。
+2、macbook下安装
+更新好固件以后，我们就可以插入macbook的笔记本。这个时候会识别出来一个mobile card的光驱。
+我们从finder进入这个光驱，就会发现“无线上网卡.app“程序
+直接安装这个程序就可以了
+3、安装好后的程序界面</description>
+    </item>
+    
+    <item>
+      <title>配置ecshop通过本地esmtp发信</title>
+      <link>http://xinlogs.com/post/2012-07-22-config-esmtp-via-gmail-sendmail/</link>
+      <pubDate>Sun, 22 Jul 2012 22:12:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-22-config-esmtp-via-gmail-sendmail/</guid>
+      <description>#问题：#
+最近有个客户的ecshop总是卡在下订单的地方。查询了下日志。发现如下
+script_filename = /public_html/quick_buy.php [0x0a29511c] fgets() /public_html/includes/cls_smtp.php:314 [0x0a295074] get_data() /public_html/includes/cls_smtp.php:230 [0x0a294f5c] auth() /public_html/includes/cls_smtp.php:146 [0x0a294da8] send() ~:299 [0x0a293e80] send_mail() ~:2161  发现问题主要是因为在ecshop里的邮件服务器设置了采用其他smtp服务器方式。我估计是到达smtp服务器验证的时间有时候太长，导致这个订单流程失败。
+看到ecshop推荐采用本地邮件服务来发信，于是开始考虑采用这个方式。
+客户的服务器采用centos的linux服务器，php 5.3.8。
+首先说说php的mail函数的条件，需要在php.ini里面指定sendmail_path.
+先说下最简单的方式，就是服务器上安装sendmail，然后调用sendmail发送邮件。
+如果怕服务器sendmail不正常，最好卸载下再重新安装。
+卸载： yum remove sendmail 安装 yum install sendmail
+再设置下php.ini里的sendmail_path=/usr/sbin/sendmail -t -i
+这样后，就可以通过ecshop里面的本地邮件服务发信了。不过这种方式有个致命缺点，因为一般我们的服务器都不被大的邮件服务商认可，所以这样发过去的邮件基本都是被拦截后者放入垃圾邮件里。
+#解决方法：#
+还是采用本地邮件服务，不过本地只是一个代理的作用，由本地的代理程序调用gmail的stmp功能发送邮件。
+本地安装esmtp程序，用来将我们的邮件通过gmail的帐号发送。这样就可以避免邮件被拦截或者认为是垃圾邮件了。
+为了一会测试方便，我们先安装一个linux下的邮件客户程序
+yum install mailx
+安装后，我们就有了mail命令。可以通过下面的命令来发信到babodx@qq.com的邮箱
+echo &amp;quot;测试&amp;quot;|mail -s &amp;quot;ceshi&amp;quot; babodx@qq.com  ##安装esmtp：##
+为了安装esmtp，我们必须先安装它依赖的一个库文件libesmtp-1.0.6
+###安装libesmtp-1.0.6###
+ tar zxvf libesmtp-1.0.6.tar.gz cd libesmtp-1.0.6 ./configure make make install  ###安装esmtp 1.2###</description>
+    </item>
+    
+    <item>
+      <title>winxp的远程桌面设置</title>
+      <link>http://xinlogs.com/post/2012-07-13-config-winxp-remote-desktop/</link>
+      <pubDate>Fri, 13 Jul 2012 22:32:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-13-config-winxp-remote-desktop/</guid>
+      <description>最近换了mac的笔记本，由于一些程序需要跑在winxp上面，比如zmud等。。。
+于是就在服务器上安装了xen，开了个winxp的虚拟机。本来xen支持vnc远程访问的，但是vnc感觉真心不给里，比windows自带的远程桌面慢了很多。
+于是开始考虑使用远程桌面，可是winxp不是服务器版本，所以远程桌面有一些限制。
+一个是解决多用户登陆问题
+下面是网上找到的解决办法，测试好用
+Windows XP不支持多个用户同时登录远程桌面，当其他用户远程登录Windows XP时，主机上当前已登录的用户
+即会自动退出。不过在Windows XP SP2中提供了允许连接会话并发功能，可通过远程桌面进行多用户的同时登录，
+但其在默认状态下关闭了该项特性，需要通过修改注册表开启该功能。
+打开注册表编辑器，依次展开
+“HKEY_LOCAL_MACHINE\System \CurrentControlSet\Control\Terminal Server\Licensing Core”  分支，转到右侧窗口，在其中新建一个类型为DWORD的子键，将该键命名为“EnableConcurrentSessions”， 并将键值设置为“1”，即可开启多用户登录功能。
+还有就是空密码登陆问题，因为winxp就是平时随便用用，每次输入密码太麻烦。但是远程桌面默认空密码不让登陆
+解决办法如下
+在运行里，输入gpedit.msc调出组策略界面
+依次找到“计算机配置”－》“windows设置”－》“安全设置”－》“本地策略”－》“安全选项” 将其中的“帐户：使用空白密码的本地帐户只运行使用控制台登陆”禁用掉。
+通过上面的设置就ok了</description>
+    </item>
+    
+    <item>
+      <title>mac下用ssh转发端口</title>
+      <link>http://xinlogs.com/post/2012-07-13-mac-vnc-rdp-over-ssh/</link>
+      <pubDate>Fri, 13 Jul 2012 19:50:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-13-mac-vnc-rdp-over-ssh/</guid>
+      <description>起因是这样的，我在服务器上安装了个虚拟winxp。但是想要在外网远程控制却不行，因为这个虚拟系统没有公网IP。
+我的服务器是有公网IP的，例如：210.1.1.1
+服务器所在内网全部是10.0.1.x 网段，外网IP是通过路由器映射给服务器的，也就是说服务器上查看IP，只有10.0.1.1这个 虚拟机我是用的xen，然后采用nat方式将一个192.168.122.x的ip分配给虚拟winxp使用。这个192.168.122.x段ip只有虚拟服务器和虚拟机可以访问到，就连同一个内网的10.0.1.x段其他机器都不能访问
+我要想远程控制winxp，只有两个办法，一个是通过xen提供的vnc来访问。也就是访问10.0.1.1:5901或者外网210.1.1.1:5901
+但是vnc的速度确实比winxp的远程桌面慢，有时候刷屏都很卡。但是winxp的ip又不能从外面访问，只能虚拟服务器自己用。 后来我就想到了用ssh来做跳转，将192.168.122.1（winxp的ip）下3389端口转发过来，这样不是就可以远程通过3389访问了？ 因为mac下面的命令行直接支持ssh，确实比windows方面。linux下的常用命令和工具都支持！
+我就直接在外网通过下面命令建立了ssh隧道
+ssh -N -L3389:192.168.122.1:3389 root@114.251.211.103  其中－N表示不用显示提示符，这个选项也可以不要 －L表示建立一个隧道，格式：[-L [bind_address:]port:host:hostport]
+我的这条命令就是将本地的3389端口通过ssh转发到192.168.122.1的3389端口，注意：这里的192.168.122.1必须是远程ssh服务器可以访问的。
+这样你访问本地127.0.0.1:3389就相当于直接访问192.168.122.1:3389了
+当然，通过调整端口也可以实现vnc的转发
+其实通过ssh －D等选项，还可以建立ssh通道，让浏览器翻墙使用。这个网上资料很多，就不多说了。</description>
+    </item>
+    
+    <item>
+      <title>2012 macbook Air 使用感受</title>
+      <link>http://xinlogs.com/post/2012-07-13-buy-macbook-air/</link>
+      <pubDate>Fri, 13 Jul 2012 17:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-07-13-buy-macbook-air/</guid>
+      <description>6月底，我购买了一台2012新款macbook air笔记本。将近一个月的使用，记录下心得。
+以前从来没有用过mac os系统，不过对于linux还是很熟悉的。
+早就打算买一台玩玩，一个是没钱，一个是总觉得单位配的也够用。后来又打算学习下ios开发，就下决心购买一台了。
+正好赶上6月新款发布，北京正规零售店都没有上市呢，于是在macx.cn上面看到大家都在福利社购买，于是我也去了。 购买心得
+福利社的价格还算不错，和北京官方公布的教育优化价格相当。而且是香港过来的本，一旦大陆上市还有保修。 我购买的是macbook air 低配版本，128G硬盘，4G内存 13&amp;rsquo;显示 价格：8500
+购买的时候需要什么软件还可以帮助安装。我就安装了常用的虚拟机和xcode 使用心得
+用来一个月下来，感觉mac os的系统确实不错。不愧是基于unix的。稳定！
+首先对于我经常需要服务器运维工作来说，mac os下面的软件完全可以满足
+自带的“终端” 可以支持大部分linux下的命令，要连接远程服务器直接ssh就可以，
+为了管理方便，我还是安装了secureCRT for mac
+输入法用IMKQIM（搜狗的词库）
+像office、qq、股票、远程桌面等常用软件都存在mac版本
+使用下来，没有任何的不适应。而且手势操作也很大的提高了效率。 感受最大的是电池可以使用7小时，而且不用关机。在不用的时候，直接合上笔记本就休眠了。下次打开直接就是桌面感觉和用Ipad似的。 因为我需要作一些php开发，在mac下面也可以使用XAMPP for mac版本
+编辑器我采用的是sublime text 2 一个月下来，主要工作全部可以用mac系统替代了，感觉很好</description>
+    </item>
+    
+    <item>
+      <title>Linux防御DDOS攻击</title>
+      <link>http://xinlogs.com/post/2012-03-21-linux-ddos-defender/</link>
+      <pubDate>Wed, 21 Mar 2012 19:33:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-03-21-linux-ddos-defender/</guid>
+      <description>这两天一个以前客户在万网购买的云主机一直被SYN Flood 攻击。
+其实SYN Flood到是只能拖慢系统，没到死机的地步。问题是万网发现了DDOS攻击后，直接给云主机断网24小时。
+这个处理太恶心了。不说想办法切断攻击的IP，而是直接断掉客户的网络。。。有点说不过去呀
+电话咨询了下，他们是系统自动处理的，发现了直接断网。 一般应付DDOS攻击主要是调整SYN相关的内核参数，这个可以从/etc/sysctl.conf入手调整。
+再有就是添加iptables规则，来限制syn和连接数量
+最后就是通过脚本检查netstat状态，自动将连接数多的ip封掉。
+一般linux系统能做到的就这些了，那些可以防ddos的硬防火墙老百姓搞不起。 调整syn相关参数和iptables网上资料很多，我就不说了。
+整段封IP的话，可以用
+iptables -I INPUT -s 192.0.0.0/8 -j DROP #来封掉192开头的全部ip   我是通过查看messages日志文件，发现了一些大量连接的IP。然后先手动封掉这些IP。下面是部分日志信息，当然这个是靠配置iptables来实现的日志
+Mar 20 21:51:21 uhz001737 kernel: HTTP_ATTACK:IN=eth1 OUT= MAC=00:16:3e:00:5d:d3:c0:62:6b:ac:ea:c1:08:00 SRC=157.55.16.56 DST=223.4.118.120 LEN=48 TOS=0x1C PREC=0x20 TTL=112 ID=16250 DF PROTO=TCP SPT=61923 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0 Mar 20 21:51:27 uhz001737 kernel: HTTP_ATTACK:IN=eth1 OUT= MAC=00:16:3e:00:5d:d3:c0:62:6b:ac:ea:c1:08:00 SRC=157.55.16.56 DST=223.4.118.120 LEN=48 TOS=0x1C PREC=0x20 TTL=112 ID=21741 DF PROTO=TCP SPT=61923 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0 Mar 20 21:51:29 uhz001737 kernel: HTTP_ATTACK:IN=eth1 OUT= MAC=00:16:3e:00:5d:d3:c0:62:6b:ac:ed:c1:08:00 SRC=157.</description>
+    </item>
+    
+    <item>
+      <title>monit监控linux服务</title>
+      <link>http://xinlogs.com/post/2012-02-02-monit-to-monitor-services/</link>
+      <pubDate>Thu, 02 Feb 2012 18:23:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-02-02-monit-to-monitor-services/</guid>
+      <description>最近负责的两台服务器需要监控nginx和memcached服务，防止网站访问异常。
+我用monit来解决这个需求。
+monit是一款linux下的开源软件，可以负责监控系统的服务、进程、文件等内容，并设置一定的条件下执行特定的action。
+我们可以通过配置，让monit来检查网站的状态和memcached的状态，发现异常的时候，自动重启服务并邮件通知我们。
+我配置了30s检查一次，出现问题发送邮件到我的gmail邮箱。我手机马上就能收到邮件提醒，非常效率。
+安装配置步骤：
+下载monit
+wget http://mmonit.com/monit/dist/monit-5.3.2.tar.gz  解压并安装
+tar zxvf monit-5.3.2.tar.gz cd monit-5.3.2 ./configure --prefix=/usr/local/monit make make install  配置
+先将默认的配置文件拷贝到/etc目录下，然后编辑monitrc文件
+cp monitrc /etc/  下面是我的一些配置：
+set daemon 30 #设置30s检查一次 set logfile /var/log/monit.log #设定日志文件 #设定邮件 set mailserver smtp.gmail.com PORT 587 USERNAME &amp;quot;yourname@gmail.com&amp;quot; PASSWORD &amp;quot;yourpassword&amp;quot; USING tlsv1 #设定邮件格式 set mail-format { from: monit@huaximall.com subject: monit alert -- $EVENT $SERVICE message: $EVENT Service $SERVICE Date: $DATE Action: $ACTION Host: xinlogs.</description>
+    </item>
+    
+    <item>
+      <title>php eaccelerator vs fastcgi_cache性能比较</title>
+      <link>http://xinlogs.com/post/2012-01-19-php-eaccelerator-vs-fastcgi-cache/</link>
+      <pubDate>Thu, 19 Jan 2012 10:15:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-01-19-php-eaccelerator-vs-fastcgi-cache/</guid>
+      <description>最近放假一直在家里测试php如何优化性能。 今天比较了下默认php、eaccelerator和fastcgi_cache的性能。
+先介绍下我的测试环境： 这次是在我VPS上做的测试：cpu 为1颗Intel&amp;reg; Core&amp;trade; i7-2600 CPU @ 3.40GHz，内存256M 系统为centos 5.6 32bit php版本 5.3.8 web服务采用Tengine/1.2.1，其实就是nginx
+测试文件一个采用phpinfo.php，这个就是phpinfo()函数输出页面。另外一个就是采用我博客首页http://xinlogs.com 注：我的博客采用emlog 4.1 下面进入我的测试。。。。
+php先用默认状态，不加载eaccelerator模块。 测试phpinfo.php,连续访问3000次，采用10个并发请求。
+ab -n 3000 -c 10 http://xinlogs.com/phpinfo.php Server Software: Tengine/1.2.1 Server Hostname: xinlogs.com Server Port: 80 Document Path: /phpinfo.php Document Length: 54365 bytes Concurrency Level: 10 Time taken for tests: 7.557223 seconds Complete requests: 3000 Failed requests: 0 Write errors: 0 Total transferred: 163608000 bytes HTML transferred: 163095000 bytes Requests per second: 396.</description>
+    </item>
+    
+    <item>
+      <title>centos 单独安装apachebench</title>
+      <link>http://xinlogs.com/post/2012-01-19-install-apachebench-on-centos-without-apache/</link>
+      <pubDate>Thu, 19 Jan 2012 08:50:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-01-19-install-apachebench-on-centos-without-apache/</guid>
+      <description>这两天在测试php性能优化方法。
+为了做压力测试可观察效果，就选择了ApacheBench来作为压力测试工具。其实就是大家常说的ab。
+但是这个工具是安装apache web server的时候自带的，现在我服务器上都是跑nginx。也不想为了用这个工具就再装个apache。所以在用下面方法单独安装ab工具，这里记录下步骤。 首先安装ab运行需要的软件包apr-util
+yum install apr-util  然后安装一个yum的工具包，为了可以单独弄出来ab。
+yum install yum-utils  上面两个安装好以后，我们开始单独安装ab，其实就是下载到apache的rpm包，然后解压后，cp出来ab工具。
+下载apache的rpm包就交给yumdownloader完成了，下载前我们建立一个临时目录用来存放。
+mkdir httpd cd httpd yumdownloader httpd  下载后，我们对rpm进行解包
+rpm2cpio httpd-2.2.3-43.el5.centos.3.i386.rpm | cpio -idmv  最后将我们用到的ab拷贝到系统的/usr/bin目录下就可以了。最后再删除临时目录就全部ok了。
+mv usr/bin/ab /usr/bin/ab cd .. rm -rf httpd  </description>
+    </item>
+    
+    <item>
+      <title>squid缓存php页面</title>
+      <link>http://xinlogs.com/post/2012-01-17-squid-cache-php-script/</link>
+      <pubDate>Tue, 17 Jan 2012 19:25:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-01-17-squid-cache-php-script/</guid>
+      <description>这两天在看squid反向代理加速web应用方面的内容。
+总体来看squid的cache都是缓存一些静态内容，例如图片、css、js等文件。而动态内容是不能缓存的。那有没有办法让squid缓存php文件呢？答案是肯定的。
+首先用squid反向代理后，我们访问一个test.html的静态页面。
+[root@localhost ~]# curl -I http://xinlogs.com:3128/test.html HTTP/1.0 200 OK Content-Type: text/html Content-Length: 77 Accept-Ranges: bytes Server: Tengine/1.2.1 Date: Tue, 17 Jan 2012 12:38:36 GMT Last-Modified: Tue, 17 Jan 2012 01:29:47 GMT X-Cache: HIT from squid.xinlogs.com Via: 1.1 squid.xinlogs.com:3128 (squid/2.7.STABLE9) Connection: close  可以看到X-Cache: HIT from squid.xinlogs.com，成功命中缓存。说明是被squid缓存的内容直接给我们了。 而访问一个动态页面呢？
+[root@localhost ~]# curl -I http://xinlogs.com:3128/test.php HTTP/1.0 200 OK Server: Tengine/1.2.1 Date: Tue, 17 Jan 2012 12:40:52 GMT Content-Type: text/html Vary: Accept-Encoding X-Powered-By: PHP/5.</description>
+    </item>
+    
+    <item>
+      <title>Mysql错误索引比没索引还慢</title>
+      <link>http://xinlogs.com/post/2012-01-15-mysql-error-index-is-slower/</link>
+      <pubDate>Sun, 15 Jan 2012 16:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2012-01-15-mysql-error-index-is-slower/</guid>
+      <description>今天一个客户反映网站某个页面很慢。初步分析是数据库查询造成的延时。 打开数据库的慢查询日志，监控到如下语句
+# Time: 120115 1:09:37 # User@Host: sq_ttt[sq_ttt] @ localhost [] # Query_time: 3.895267 Lock_time: 0.000131 Rows_sent: 1 Rows_examined: 168835 use sq_ttt; SET timestamp=1326560977; SELECT A.*,A.aid AS id FROM p8_article A WHERE A.yz=1 AND A.fid IN (31) AND A.ispic=1 ORDER BY A.list DESC LIMIT 0,1;  这个查询用了3.8s时间。 于是进入数据库开始了这次分析。。。 首先看下表结构
+CREATE TABLE `p8_article` ( `aid` mediumint(7) unsigned NOT NULL AUTO_INCREMENT, `title` varchar(150) NOT NULL DEFAULT &#39;&#39;, `smalltitle` varchar(100) NOT NULL DEFAULT &#39;&#39;, `fid` mediumint(7) unsigned NOT NULL DEFAULT &#39;0&#39;, `mid` mediumint(5) NOT NULL DEFAULT &#39;0&#39;, `fname` varchar(50) NOT NULL DEFAULT &#39;&#39;, `hits` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `pages` smallint(4) NOT NULL DEFAULT &#39;0&#39;, `comments` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `posttime` int(10) NOT NULL DEFAULT &#39;0&#39;, `list` int(10) NOT NULL DEFAULT &#39;0&#39;, `uid` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `username` varchar(30) NOT NULL DEFAULT &#39;&#39;, `author` varchar(30) NOT NULL DEFAULT &#39;&#39;, `copyfrom` varchar(100) NOT NULL DEFAULT &#39;&#39;, `copyfromurl` varchar(150) NOT NULL DEFAULT &#39;&#39;, `titlecolor` varchar(15) NOT NULL DEFAULT &#39;&#39;, `fonttype` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `picurl` varchar(150) NOT NULL DEFAULT &#39;0&#39;, `ispic` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `yz` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `yzer` varchar(30) NOT NULL DEFAULT &#39;&#39;, `yztime` int(10) NOT NULL DEFAULT &#39;0&#39;, `levels` tinyint(2) NOT NULL DEFAULT &#39;0&#39;, `levelstime` int(10) NOT NULL DEFAULT &#39;0&#39;, `keywords` varchar(100) NOT NULL DEFAULT &#39;&#39;, `jumpurl` varchar(150) NOT NULL DEFAULT &#39;&#39;, `iframeurl` varchar(150) NOT NULL DEFAULT &#39;&#39;, `style` varchar(15) NOT NULL DEFAULT &#39;&#39;, `template` varchar(255) NOT NULL DEFAULT &#39;&#39;, `target` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `ip` varchar(15) NOT NULL DEFAULT &#39;&#39;, `lastfid` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `money` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `buyuser` text NOT NULL, `passwd` varchar(32) NOT NULL DEFAULT &#39;&#39;, `allowdown` varchar(150) NOT NULL DEFAULT &#39;&#39;, `allowview` varchar(150) NOT NULL DEFAULT &#39;&#39;, `editer` varchar(30) NOT NULL DEFAULT &#39;&#39;, `edittime` int(10) NOT NULL DEFAULT &#39;0&#39;, `begintime` int(10) NOT NULL DEFAULT &#39;0&#39;, `endtime` int(10) NOT NULL DEFAULT &#39;0&#39;, `description` text NOT NULL, `lastview` int(10) NOT NULL DEFAULT &#39;0&#39;, `digg_num` mediumint(7) NOT NULL DEFAULT &#39;0&#39;, `digg_time` int(10) NOT NULL DEFAULT &#39;0&#39;, `forbidcomment` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `ifvote` tinyint(1) NOT NULL DEFAULT &#39;0&#39;, `heart` varchar(255) NOT NULL DEFAULT &#39;&#39;, `htmlname` varchar(100) NOT NULL DEFAULT &#39;&#39;, PRIMARY KEY (`aid`), KEY `list` (`list`,`fid`,`yz`,`ispic`) USING BTREE ) ENGINE=MyISAM AUTO_INCREMENT=176567 DEFAULT CHARSET=gbk   然后我们采用explain看看是否使用了索引</description>
+    </item>
+    
+    <item>
+      <title>php性能调试工具</title>
+      <link>http://xinlogs.com/post/2011-12-30-php-performance-debugging-tools/</link>
+      <pubDate>Fri, 30 Dec 2011 14:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-30-php-performance-debugging-tools/</guid>
+      <description>最近在帮一些客户优化php性能。
+排除掉服务器环境、memcache这些办法后，剩下的就是找php代码有没有执行过慢的因素了。
+下面列出一些在php性能调试中可以用到的工具。
+1、xdebug 这个工具大家都很熟悉，开始php过程中，用来调试程序用的。
+2、webgrind 这个工具主要是配合xdebug来使用，用来监测php执行时间的。
+3、XHProf 这个工具据说比xdebug轻量，可以考虑用于生产环境下来监测php性能。没有用过，看介绍很棒！facebook用的，肯定差不了。 以上只是简单介绍下，用来记录。等以后有机会仔细用来，再发文档说明</description>
+    </item>
+    
+    <item>
+      <title>php-fpm查找php慢速代码</title>
+      <link>http://xinlogs.com/post/2011-12-29-find-php-slow-code/</link>
+      <pubDate>Thu, 29 Dec 2011 21:45:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-29-find-php-slow-code/</guid>
+      <description>前两天帮助一个客户优化ecshop。 他的ecshop代码是找人修改过的，修改后速度已很很慢，大概打开一页需要9s吧。 而默认的ecshop在同样服务器上速度就很快。 开始走了很多弯路，因为只是速度慢，并无错误。就没有想到是代码的原因。 对比两个ecshop，首先发现首页加载的request数量差距很大，慢的站点105次，快的46次。 而且慢的站点1.66M大小，而快的只有455k。通过开启gzip和合并css、js等手段优化后，效果并不明显。 后来想到可能是因为找人修改过代码，开始怀疑到代码上（也确实没啥办法了）。 想到php-fpm可以记录下执行过慢的php脚本，于是修改php-fpm配置，加入了记录慢速php请求的代码。
+下面是在php 5.3.8下的php-fpm.conf文件添加的内容
+request_slowlog_timeout=5s slowlog=/var/log/fpm_slow.log  这个配置会将php脚本执行超过5秒的，记录在/var/log/fpm_slow.log文件中。 如果你的php还是5.2.x的版本，那么php-fpm还是以补丁的形式执行，请参考下面的配置文件
+The timeout (in seconds) for serving of single request after which a php backtrace will be dumped to slow.log file &#39;0s&#39; means &#39;off&#39; &amp;lt;value name=&amp;quot;request_slowlog_timeout&amp;quot;&amp;gt;0s&amp;lt;/value&amp;gt; The log file for slow requests &amp;lt;value name=&amp;quot;slowlog&amp;quot;&amp;gt;logs/slow.log&amp;lt;/value&amp;gt;  最终在/var/log/fpm_slow.log文件里，发现很多如下记录
+[27-Dec-2011 10:07:27] [pool www] pid 8524 script_filename = /data/huaximall/flow.php [0x0a0f41c0] fsockopen() !:649 [0x0a0f4104] _connect_sock() !:937 [0x0a0f3fdc] sock_to_host() !:693 [0x0a0f3f08] get_sock() !</description>
+    </item>
+    
+    <item>
+      <title>通过denyhosts保护ssh登陆</title>
+      <link>http://xinlogs.com/post/2011-12-25-ssh-login-protection-by-denyhosts/</link>
+      <pubDate>Sun, 25 Dec 2011 18:31:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-25-ssh-login-protection-by-denyhosts/</guid>
+      <description>今天查看服务器的/var/log/secure日志，发现很多类似下面的信息
+PAM 6 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=121.176.35.192 user=root
+说明经常有人通过ssh尝试登陆，并不断尝试猜测root的密码。
+这样总让人尝试我的密码也不是个事儿呀&amp;hellip;.于是通过denyhosts软件，开启了保护。
+通过denyhosts我们可以设置登陆失败几次，就禁止这个IP再次登陆。并可以设置多少分钟后，放开保护。
+denyhosts介绍
+DenyHosts是Python语言写的一个程序，用DenyHosts可以阻止试图猜测SSH登录口令，它会分析/var/log/secure等日志文件，当发现同一IP在进行多次SSH密码尝试时就会记录IP到/etc/hosts.deny文件，从而达到自动屏蔽该IP的目的。
+安装需求
+首要要求有python环境，并版本在2.3以上
+CentOS 默认安装了2.4.3版本，我们可以通过下面命令查看
+[root@localhost ~]# python -V Python 2.4.3  注意大小写。
+其次是sshd需要支持tcp_wrappers。这个一般都支持。可以用下面命令判断
+ldd /usr/sbin/sshd |grep wrap
+如果显示：libwrap.so.0 =&amp;gt; /lib/libwrap.so.0 (0x00db7000)表示支持
+安装
+当前最新的版本是2.6
+下载
+解压安装
+tar zxvf DenyHosts-2.6.tar.gz cd DenyHosts-2.6 python setup.py install  默认将程序安装在/usr/share/denyhosts
+库文件在/usr/lib/python2.4/site-packages/DenyHosts/
+denyhosts.py安装到/usr/bin
+设置启动脚本
+cd /usr/share/denyhosts/ cp daemon-control-dist daemon-control chown root daemon-control chmod 700 daemon-control grep -v &amp;quot;^#&amp;quot; denyhosts.</description>
+    </item>
+    
+    <item>
+      <title>linux网络连接数量监控</title>
+      <link>http://xinlogs.com/post/2011-12-22-monitor-network-connections-of-linux/</link>
+      <pubDate>Thu, 22 Dec 2011 19:44:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-22-monitor-network-connections-of-linux/</guid>
+      <description>今天早上一个客户的网站停止了响应，不能正常解析php内容。 重启php-fpm后正常，判断应该是php-fpm进程僵死。所以就先参考网上内容，写了一个监控nginx状态脚本 后来又想看看这个php-fpm进程挂掉和访问量是否有关系，于是打算记录下服务器每分钟的访问量。 其实就是用cron每分钟执行我写的这个脚本，而脚本的作用就是获取当前linux的连接数，并记录到日志文件中。 监控linux网络连接数的脚本如下
+#!/bin/sh #定义日志的时间格式，用来作为日志结尾的时间标记 logfile=`date +%Y%m%d` #定义个时间，用来写入日志用 logtime=`date` #获取当前系统的网路连接数，这里去掉了127.0.0.1的连接，因为我的php-fpm用的127.0.0.1:9000这个连接。 log=`netstat -ntu | awk &#39;{print $5}&#39; | cut -d: -f1 |grep [^127.0.0.1] |wc -l` #写日志内容到日志文件 echo &amp;quot;$logtime | $log &amp;quot; &amp;gt;&amp;gt; /data/logs/connect_$logfile.log  </description>
+    </item>
+    
+    <item>
+      <title>bbsxp 6.0数据导入phpwind 8.7方法</title>
+      <link>http://xinlogs.com/post/2011-12-14-bbsxp6-to-phpwind8/</link>
+      <pubDate>Wed, 14 Dec 2011 23:12:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-14-bbsxp6-to-phpwind8/</guid>
+      <description>今天帮助猪八戒网上的一个客户将原来的bbsxp 6.0的论坛数据迁移到phpwind 8.7下。这里主要记录下思路
+phpwind官方论坛有各种的迁移程序，但是继续bbsxp的最早版本是2008. 而我这个客户的是bbsxp 6的access库。
+完成这个任务，我顺利升级到猪三戒！呵呵
+没有现成的，只能自己分析了。
+为了导入方便，我先将需要用到的数据从access的库导入mysql里。
+这样bbsxp的表和新安装的phpwind表都在一个库了。
+数据分析
+这个步骤主要分析用户数据、论坛的板块数据、帖子、回帖等数据的格式。找到两个表的数据关系，为后面导入数据打下基础。
+数据迁移
+用户数据
+INSERT INTO pw_members(uid,username,password,email,icon,gender,regdate,signature,site,bday) SELECT ID,UserName,lower(UserPass),UserMail,UserFace,UserSex,UNIX_TIMESTAMP(UserRegTime),UserSign,UserHome,Birthday From bbsxp_users;  INSERT INTO pw_memberdata(uid,postnum,rvrc,money) SELECT ID,PostTopic,PostRevert,UserMoney From bbsxp_users;  帖子数据
+INSERT INTO pw_threads(tid,fid,author,subject,ifcheck,postdate,lastpost,lastposter,hits,replies) SELECT ID,ForumID,UserName,Topic,1,UNIX_TIMESTAMP(PostTime),UNIX_TIMESTAMP(LastTime),LastName,Views,Replies From bbsxp_threads;  INSERT INTO pw_tmsgs(tid,content) SELECT ThreadID,Content From bbsxp_posts2 where IsTopic=1;  update pw_threads set authorid = (SELECT uid from pw_members WHERE username=pw_threads.author);  回帖数据
+INSERT INTO pw_posts(pid,tid,author,postdate,subject,ifcheck,content) SELECT ID,ThreadID,UserName,UNIX_TIMESTAMP(PostTime),Subject,1,Content From bbsxp_posts2 where IsTopic=0;  update pw_posts set authorid = (SELECT uid from pw_members WHERE username=pw_posts.</description>
+    </item>
+    
+    <item>
+      <title>如何找到执行慢的php程序</title>
+      <link>http://xinlogs.com/post/2011-12-09-check-slow-php-script/</link>
+      <pubDate>Fri, 09 Dec 2011 19:56:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-09-check-slow-php-script/</guid>
+      <description>最近在帮助一个网站做性能优化。 从原来的windows平台切换到了linux平台。php环境也已经变为主流的Nginx+php-fpm+eAccelerator+Zend Optimization组合 打开了MySQL的慢连接，发现基本集中在论坛的表查询上，但是我们如何定位有哪些php程序在执行的时候过慢呢？
+通过查看php-fpm.conf配置，可以找到如下配置信息
+The timeout (in seconds) for serving of single request after which a php backtrace will be dumped to slow.log file &#39;0s&#39; means &#39;off&#39; &amp;lt;value name=&amp;quot;request_slowlog_timeout&amp;quot;&amp;gt;0s&amp;lt;/value&amp;gt; The log file for slow requests &amp;lt;value name=&amp;quot;slowlog&amp;quot;&amp;gt;logs/slow.log&amp;lt;/value&amp;gt;  request_slowlog_timeout 项是一个设定超过多长时间就会被记录到slow.log日志中。0s为关闭这个选项。
+下面的slowlog为设置slow.log文件的位置。
+打开这个以后，我们就可以看到哪些php文件用了过多的执行时间，来重点优化。 而且php-fpm.log也回提示出执行时间超过这个设定的信息。
+下面是php-fpm.log的提示
+Dec 09 20:19:25.170259 [WARNING] fpm_request_check_timed_out(), line 146: child 28844, script &#39;/data/htdocs/bbs/forumdisplay.php&#39; (pool default) executing too slow (3.110822 sec), logging  提示forumdisplay.php文件执行过慢，用了3.110822秒
+再来看看slow.log的内容
+Dec 09 20:23:49.534250 pid 28865 (pool default) script_filename = /data/htdocs/t/bbs/forumdisplay.</description>
+    </item>
+    
+    <item>
+      <title>伪静态规则调试技巧</title>
+      <link>http://xinlogs.com/post/2011-12-01-howto-open-rewrite-log/</link>
+      <pubDate>Thu, 01 Dec 2011 21:46:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-12-01-howto-open-rewrite-log/</guid>
+      <description>最近在威客网上接了个任务，帮助调整伪静态规则。WEB服务是apache的，主要就是修改rewrite规则。
+伪静态规则写起来比较麻烦，关键是正则表达是写完总要测试，而我们不知道这个rewrite该怎么测试。我们需要准确知道服务器是怎么匹配我们的规则的，匹配后又发生了什么。这也就是我今天要写的调试技巧。
+目前我们采用的WEB Server主要是apache和nginx（Windows下的IIS我不用，只有基于Linux的）。
+其实所谓技巧就是通过打开rewrite的日志功能，然后每次访问后，我们查看rewrite日志来分析我们的规则是否正确。
+APACHE开启rewrite办法
+在httpd.conf文件里加入
+RewriteLog &amp;quot;/xampp/apache/logs/RewriteLog.txt&amp;quot; RewriteLogLevel 9  我这里没用Linux下的apache，直接在我windows下的xampp环境里测试的
+访问后的rewrite日志文件如下
+127.0.0.1 - - [01/Dec/2011:15:38:38 +0800] [localhost/sid#775148][rid#6ba00d8/initial] (3) [perdir C:/xampp/htdocs/] strip per-dir prefix: C:/xampp/htdocs/q-123.html -&amp;gt; q-123.html 127.0.0.1 - - [01/Dec/2011:15:38:38 +0800] [localhost/sid#775148][rid#6ba00d8/initial] (3) [perdir C:/xampp/htdocs/] applying pattern &#39;^.*$&#39; to uri &#39;q-123.html&#39; 127.0.0.1 - - [01/Dec/2011:15:38:38 +0800] [localhost/sid#775148][rid#6ba00d8/initial] (4) [perdir C:/xampp/htdocs/] RewriteCond: input=&#39;C:/xampp/htdocs/q-123.html&#39; pattern=&#39;!-f&#39; =&amp;gt; matched 127.0.0.1 - - [01/Dec/2011:15:38:38 +0800] [localhost/sid#775148][rid#6ba00d8/initial] (4) [perdir C:/xampp/htdocs/] RewriteCond: input=&#39;C:/xampp/htdocs/q-123.html&#39; pattern=&#39;!-d&#39; =&amp;gt; matched 127.</description>
+    </item>
+    
+    <item>
+      <title>Linux源码安装MySQL多版本共存</title>
+      <link>http://xinlogs.com/post/2011-11-25-linux-source-install-multiple-versions-of-mysql/</link>
+      <pubDate>Fri, 25 Nov 2011 18:48:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-25-linux-source-install-multiple-versions-of-mysql/</guid>
+      <description>原来我的服务器上是MySQL 5.5.16。本来是用的挺稳定。但是当时编译的时候由于手误将DDEFAULT_COLLATION=utf8-general_ci \弄错啦。。。应该是utf8_general_ci。导致很多程序用的时候报错，或者需要修改。 最近发现MySQL更新到了5.5.18了，就打算迁移到新数据库正好修正原来问题。 为了不影响访问，就打算在5.5.16运行的情况下，继续安装好5.5.18.等顺利转移到5.5.18后，再关闭原来MySQL5.5.16版本。 也就有了今天这篇文章。在Linux下从源码安装多版本或者多个MySQL数据库。
+重点：多版本或者多个MySQL同时运行，主要就是多个MySQL需要运行在不同目录，不同的端口，采用不同的数据库路径。
+步骤
+1、首先是下载需要安装的MySQL
+下载mysql 5.5.16
+wget http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.16.tar.gz/from/http://mysql.mirrors.pair.com/  下载mysql 5.5.18
+wget http://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.16.tar.gz/from/http://mysql.mirrors.pair.com/  2、安装支持程序
+原来版本的MySQL源码安装都是采用./configure和make这些。但是新版本的都是用cmake来弄了。所以如果系统中没有的，需要先安装cmake
+yum install cmake  3、创建MySQL用户和用户组
+/usr/sbin/groupadd mysql /usr/sbin/useradd -g mysql mysql  4、解压、编译、安装MySQL
+解压  tar zxvf mysql-5.5.16.tar.gz cd mysql-5.5.16 
+编译参数
+cmake . \ -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql5516/ \ -DMYSQL_DATADIR=/data0/mysql/3306/data \ -DMYSQL_UNIX_ADDR=/data0/mysql/3306/mysqld.sock \ -DWITH_MYISAM_STORAGE_ENGINE=1 \ -DWITH_INNOBASE_STORAGE_ENGINE=1 \ -DWITH_BLACKHOLE_STORAGE_ENGINE=0 \ -DWITH_ARCHIVE_STORAGE_ENGINE=0 \ -DWITHOUT_PARTITION_STORAGE_ENGINE=1 \ -DENABLED_LOCAL_INFILE=1 \ -DMYSQL_TCP_PORT=3306 \ -DEXTRA_CHARSETS=all \ -DDEFAULT_CHARSET=utf8 \ -DDEFAULT_COLLATION=utf8_general_ci \ -DWITH_DEBUG=0 \ -DWITH_EMBEDDED_SERVER=1 \ -DWITH_SSL=system \ -DWITH_READLINE=1  注意：编译参数里有几项需要根据自己具体情况设置。我这里将MySQL5.</description>
+    </item>
+    
+    <item>
+      <title>emlog支付插件发布</title>
+      <link>http://xinlogs.com/post/2011-11-20-emlog-alipay-pulgin/</link>
+      <pubDate>Sun, 20 Nov 2011 19:29:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-20-emlog-alipay-pulgin/</guid>
+      <description>今天看到支付宝可以采用http://me.alipay.com/用户名的形式创建自己的收款页面。以前要想写支付宝的付款插件，需要先申请一个商家用户，拿到分配你的密钥才可以。现在可以通过创建收款主页来直接收款，对于程序开发方便了很多（不过这个方式只能简单的收款，并不能用于商品的订单，没有回调函数不能知道是否收款成功等内容）。 而且看到wordpress貌似已经有了这样的插件可以用来发布一个收款按钮，于是我也心血来潮写了一个。主要还是为了学习如何写一个emlog的插件。看着官方的插件开发文档，参考着公告插件的代码来写的这个支付宝收款插件。 主要功能：
+1、在博客的侧边栏显示出一个支付宝的收款按钮，基本也就是用来让人家自愿捐款用。如下图：
+2、后台可以方便的设置用来收款的支付宝收款主页地址。</description>
+    </item>
+    
+    <item>
+      <title>emlog访问速度优化之minify整合css与js文件</title>
+      <link>http://xinlogs.com/post/2011-11-17-emlog-optimize-via-minify/</link>
+      <pubDate>Thu, 17 Nov 2011 20:56:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-17-emlog-optimize-via-minify/</guid>
+      <description>我们知道网站的访问速度和很多因素相关，但是今天这里只是优化我们能力范围内的首页文件加载数量与大小。
+如果首页文件很大，肯定加载慢。还有一个因素就是首页如果加载很多css和js文件，因为在加载过程中会建立很多次连接从而降低访问首页的速度。
+下面是我博客默认情况下的加载css和js文件的数量
+从图上可以看到加载了4个css文件和5个js文件。大小分别为54.2kb和45.5kb。 下面我们的主要工具出场：minify
+这个程序是纯php编写的开源程序，用来将我们网站的css和js文件进行整合与压缩。这样我们就可以通过整合css与js文件并压缩大小从而提高首页加载速度。 首先将minify下载，我这里采用的是minify_2.1.3版本。将下载后的min目录放到网站的根目录。 接着我们改造我们的程序，让css与js文件通过minify程序合并压缩。 我是自己写了一个类，我起名为merge.php用来调用minify整合。下面是类代码
+&amp;lt;?php /** * JS和CSS文件合并类 * * @copyright (c) xinlogs.com All Rights Reserved * $Id: merge.php 2011-11-16 09:54:58Z xinlogs.com$ */ class Merge { //定义两个数组用来存储全部css和js文件的位置 static private $css_list=array(); static private $js_list=array(); static private $js_code=array(); //定义addCssFile方法，用来添加css文件到数组 static function addCssFile($addFilePath) { array_push(self::$css_list,$addFilePath); } //定义getCssList方法，用来返回css文件字符串 static function getCssList(){ return implode(&amp;quot;,&amp;quot;,self::$css_list); } //定义addJsFile方法，用来添加js文件到数组 static function addJsFile($addFilePath) { array_push(self::$js_list,$addFilePath); } //定义getJsList用来返回js文件字符串 static function getJsList(){ return implode(&amp;quot;,&amp;quot;,self::$js_list); } //加入js代码 static function addJsCode($addJsCode) { array_push(self::$js_code,$addJsCode); } static function includejscode(){ return implode(&amp;quot; &amp;quot;,self::$js_code); } //用来返回加入CSS代码的语句 static function includecss() { $css=&amp;quot;&amp;lt;link href=&amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>nginx通过301统一入口域名</title>
+      <link>http://xinlogs.com/post/2011-11-13-nginx-301-rewrite/</link>
+      <pubDate>Sun, 13 Nov 2011 16:34:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-13-nginx-301-rewrite/</guid>
+      <description>我们知道网站的入口域名一般都是www.domain.com或者domain.com。有的网站选择带www而有的网站选择不带www。 但是搜索引擎会将www.domian.com和domian.com 认为是两个地址从而分散我们的权重。所以通过nginx的301转向来统计入口域名，有利于我们的网站提高权重。 以我的博客为例，服务器采用的就是nginx+fastcgi配合php模式。我的nginx关于博客的配置如下
+server { listen 80; server_name xinlogs.com www.xinlogs.com;  这样通过xinlogs.com或者www.xinlogs.com都可以访问到我的博客，但是这样做相当于我的博客首页有了两个地址，不利于搜索引擎收录和分配权重。 所以我采用nginx提供的rewrite来实现301转向，通过301转向的域名地址搜索引擎会将权重或者PR也一起转向过去。这样就不损失网站的PR和权重了。也就是把通过www或者不带www访问的这些流量和查询或者外链的权重整合到了一起。 下面是我的配置，我希望通过xinlogs.com作为我博客的统一入口域名，而带www的访问全部转向到xinlogs.com域名。
+server { listen 80; server_name xinlogs.com www.xinlogs.com; if ($host != &amp;quot;xinlogs.com&amp;quot;) { rewrite ^/(.*)$ http://xinlogs.com/$1 permanent; }  经过上面的的配置，也就是那句if条件语句，将不是xinlogs.com的域名，全部转移到了xinlogs.com下。 下面我们测试下效果，因为只有明确的看到了转向信息，才证明我的配置成功了。所以采用curl命令测试。 测试www.xinlogs.com是否被转向
+-bash-3.2# curl -i www.xinlogs.com HTTP/1.1 301 Moved Permanently Server: nginx/1.0.8 Date: Sun, 13 Nov 2011 05:03:22 GMT Content-Type: text/html Content-Length: 184 Connection: keep-alive Location: http://xinlogs.com/    301 Moved Permanently 301 Moved Permanently nginx/1.</description>
+    </item>
+    
+    <item>
+      <title>Centos Linux 远程终端ssh乱码问题</title>
+      <link>http://xinlogs.com/post/2011-11-10-centos-linux-sshclient-unreadable-code/</link>
+      <pubDate>Thu, 10 Nov 2011 15:23:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-10-centos-linux-sshclient-unreadable-code/</guid>
+      <description>我们经常碰到linux乱码问题。尤其是碰到网页上传个中文文件名的文件，ssh登陆到linux一看全乱码想删除都不行。很郁闷的。如下图所示中文文件名全都是显示问号了（这个乱码由于你的编码设置不同，显示的也不太一样）
+还有一个就是vim的乱码
+解决办法：
+首先需要给linux安装中文支持。这里以centos为例，所以采用yum安装
+yum groupinstall chinese-support
+然后再设置linux系统的i18n文件，位置在/etc/sysconfig/i18n
+LANG=&amp;quot;zh_CN.GB18030&amp;quot; SUPPORTED=&amp;quot;zh_CN.UTF-8:zh_CN.GBK:zh_CN.GB18030:zh_CN:zh:en_US.UTF-8:en_US:en&amp;quot; SYSFONT=&amp;quot;latarcyrheb-sun16&amp;quot;  接着设置LC_ALL环境变量，在/etc/profile文件里加入
+export LC_ALL=zh_CN.GB18030
+全部设置好后，重启系统。再次登陆后，用如下命令查看
+-bash-3.2# locale LANG=zh_CN.GB18030 LC_CTYPE=&amp;quot;zh_CN.GB18030&amp;quot; LC_NUMERIC=&amp;quot;zh_CN.GB18030&amp;quot; LC_TIME=&amp;quot;zh_CN.GB18030&amp;quot; LC_COLLATE=&amp;quot;zh_CN.GB18030&amp;quot; LC_MONETARY=&amp;quot;zh_CN.GB18030&amp;quot; LC_MESSAGES=&amp;quot;zh_CN.GB18030&amp;quot; LC_PAPER=&amp;quot;zh_CN.GB18030&amp;quot; LC_NAME=&amp;quot;zh_CN.GB18030&amp;quot; LC_ADDRESS=&amp;quot;zh_CN.GB18030&amp;quot; LC_TELEPHONE=&amp;quot;zh_CN.GB18030&amp;quot; LC_MEASUREMENT=&amp;quot;zh_CN.GB18030&amp;quot; LC_IDENTIFICATION=&amp;quot;zh_CN.GB18030&amp;quot; LC_ALL=zh_CN.GB18030  完成以上操作，应该就可以正常显示中文文件名字了。不过这个只是linux没有问题了，我们的ssh客户端还需要支持才可以。我一般使用Putty来当做ssh客户端，下面就以putty为例子进行设置。 先设置使用的字体，选择windows-&amp;gt;Appearance，弹出的字体界面里选择“新宋体”，字符集选择“CHINESE_GB2312”
+再设置编码
+以上设置完成后，就可以正常显示了。效果如下图所示：
+在命令行输入中文文件名也可以正常使用了。
+到目前为止，ssh下操作中文文件名的问题就彻底解决了。可以正常输入中文文件名来操作了。
+下面是vim显示乱码问题，vim一般都是因为文件编码和显示编码的问题引起的乱码。
+我们打开文件发现乱码后，采用如下命令
+set encoding=utf-8 termencoding=gbk
+这样以后，vim也可以正常操作中文了。效果图
+注意:
+网上看到一些资料说是将i18n的LANG设置为zh_CN.UTF-8，然后LC_ALL也是设置为zh_CN.UTF-8
+但是我试验了下，效果并不好（也将putty调整为了utf-8）.但是文件名显示还是乱码。需要用ls &amp;ndash;show-control-chars来正常显示，输入中文文件名也不正常。
+以上只是在putty下使用，也许配合其他ssh客户端效果不太一样。稍后我再添加一些其他客户端效果。</description>
+    </item>
+    
+    <item>
+      <title>解决godaddy注册域名无法解析问题</title>
+      <link>http://xinlogs.com/post/2011-11-06-godaddy-to-dnspod/</link>
+      <pubDate>Sun, 06 Nov 2011 18:25:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-11-06-godaddy-to-dnspod/</guid>
+      <description>godaddy.com是全球知名的域名注册商。国内很多站长也是使用的这个注册商。
+但是出于各种原因，godaddy的域名服务器经常被国内封掉。导致我们注册的域名无法被解析。直接影响了网站的稳定性。
+解决办法无非两个：一、不用godaddy了，二、换域名服务器。
+如果不打算用godaddy了，我推荐name.com也不错，不过不支持支付宝了。需要用paypal支付
+而我选择了第二种办法，采用国内的dns服务器来代替godaddy自己的，这样可以很好的解决问题。
+具体步骤：
+到http://www.dnspod.cn去注册一个免费账号，不知道dnspod为何物的，可以参考下面介绍
+关于DNSPod
+DNSPod建立于2006年3月份，是国内最早提供免费智能DNS产品的网站，致力于为各类网站提供高质量的多线智能DNS免费解析。
+DNSPod以稳定性、安全性、功能强大、智能免费、高速等优 势深得广大站长和企业用户们的喜爱，以至于越来越多的企业站、地方门户站、游戏站等等都在使用DNSPod，他们喜欢的是DNSPod给他们带来的稳定性、承受能力强、访问速度快以及极高的用户体验，使用普通的DNS（像域名注册商提供的）不是不可以“用”，但是避免不了因为不稳定导致网站时常经常打不开，由于功 能限制不能实现想要实现的功能、因为用户体验不够好等丢失客户。所以选择一个好的DNS服务商可以为自己的网站带来很大的、意想不到的收益，避开不必要的损失。
+功能上：除了智能DNS解析，普通DNS解析也可以满足用户的稳定、高速等需求。相对竞争对手的产品，DNSPod除了实时生效，不限制用户添加的域名和记录数量外，还率先提供 了IPv6的支持和动态域名解析的功能，另外还支持DNS轮询、URL转发、API接口、批量修改管理等先进功能。并且所有功能都是免费提供。
+使用DNSPod的站长们知道，DNSPod不仅仅是以雄厚的技术优势，而且还是靠优质的服务赢得市场的，为几十万免费用户和几千VIP用户分别设立相应的技术支持！做到用户与DNSPod随时可以沟通，有问题及时解决！
+暴风影音、华军下载、魅族手机、VeryCD、4399、 霏凡下载、雨林木风、深度、手机之家、去看去看、站长之家、51啦、Discuz、cnBeta、 逐浪文学等知名网站都是DNSPod vip用户。
+将域名服务器修改到国内
+在 dnspod的后台域名管理中，添加自己需要转到国内的解析的域名。如下图
+点开我们刚添加的域名，可以看到分配给我们的dns服务器。如下图
+现在我们登录到godaddy下，修改我们的DNS服务器到刚才dnspod分配给我们的dns服务器上。
+登录后，如下图所示，点my account
+然后在域名管理界面，点我们要转到国内解析的域名。如图
+进入域名管理后，找到NameServers项，点set name servers。如图
+上面点击“Set Nameservers”后，会弹出一个窗口让你设置DNS Server。如下图
+将Nameserver1和Nameserver2里面的内容修改为dnspod分配给我们的dns服务器。nameserver3和nameserver4里面清空。
+点 “OK”按钮完成设置。
+域名服务器设置完，我们回到dnspod的后台，查看我们域名的状态。一般情况会是无法解析或者dns错误。这个说明还没有生效。最慢48小时生效。如果48小时候，还是错误就要找dnspod联系看看怎么解决了。也可以自己使用dnspod提供的域名全面诊断来判断问题。
+下面是完全生效后的状态</description>
+    </item>
+    
+    <item>
+      <title>Gvim配置</title>
+      <link>http://xinlogs.com/post/2011-10-31-gvim-vimrc-file/</link>
+      <pubDate>Mon, 31 Oct 2011 10:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-31-gvim-vimrc-file/</guid>
+      <description>vim是在linux下面很有名的编辑工具。而今天说到的这个gvim呢，就是vim工具在windows下的版本。 因为游戏、网银等种种原因，不是每个人都可以全部切换到linux下的，而linux的很多很棒的开源软件又特别好用。所以就尽量找这些软件的windows版本了。 软件主页：http://www.vim.org/
+下载地址：ftp://ftp.vim.org/pub/vim/pc/gvim73_46.exe
+默认状态下的gvim是和windows软件一样，也有菜单和状态条等的。但是我个喜欢linux下的风格。下面就是我目前使用的样子
+gvim的设置全部是基于目录下的_vimrc配置文件的。
+这里具体的配置项内容我就不一一说明了，感兴趣的完全可以查看vim资料。我只是放出我的配置文件（基本也是网上其他高手分享出来的，自己修改下适合自己用就ok了） </description>
+    </item>
+    
+    <item>
+      <title>修改EMiDream模板</title>
+      <link>http://xinlogs.com/post/2011-10-26-mod-template-emidream/</link>
+      <pubDate>Wed, 26 Oct 2011 19:40:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-26-mod-template-emidream/</guid>
+      <description>今天修改了EMiDream模板。这个模板是给wordpress制作的，应用在http://www.templatesnext.org/网站 我是在emlog论坛找到了“通信民工”修改的过来的版本。 我所做的修改如下： 1、首页每条博客下面变为了中文的 评论 和 浏览 这个修改主要是在log_list.php文件中，将28、29行改为如下内容
+ &amp;lt;span class=&amp;quot;postcomments&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;&amp;lt;?php echo $value[&#39;log_url&#39;]; ?&amp;gt;#comments&amp;quot; title=&amp;quot;查询评论&amp;quot;&amp;gt;评论：&amp;lt;?php echo $value[&#39;comnum&#39;]; ?&amp;gt;&amp;lt;/a&amp;gt;&amp;lt;/span&amp;gt; &amp;lt;span class=&amp;quot;postmore&amp;quot;&amp;gt;浏览：&amp;lt;?php echo $value[&#39;views&#39;]; ?&amp;gt;&amp;lt;/span&amp;gt;  2、友情链接只在首页的时候显示，这个有利于SEO。 主要是通过修改module.php实现。找到文件中关于友情链接段代码，然后在代码前后加入判断是否为首页的代码。 具体代码如下：
+&amp;lt;?php //判断是否是首页，不是首页，不显示友情链接 if(&amp;quot;http://&amp;quot;.$_SERVER[&#39;HTTP_HOST&#39;].$_SERVER[&#39;REQUEST_URI&#39;] == BLOG_URL):?&amp;gt; &amp;lt;?php //widget：链接 function widget_link($title){ global $CACHE; $link_cache = $CACHE-&amp;gt;readCache(&#39;link&#39;); ?&amp;gt; &amp;lt;div class=&amp;quot;widget-cat&amp;quot;&amp;gt; &amp;lt;h4&amp;gt;&amp;lt;?php echo $title; ?&amp;gt;&amp;lt;/h4&amp;gt; &amp;lt;ul id=&amp;quot;link&amp;quot;&amp;gt; &amp;lt;?php foreach($link_cache as $value): ?&amp;gt; &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;&amp;lt;?php echo $value[&#39;url&#39;]; ?&amp;gt;&amp;quot; title=&amp;quot;&amp;lt;?php echo $value[&#39;des&#39;]; ?&amp;gt;&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;&amp;lt;?php echo $value[&#39;link&#39;]; ?&amp;gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt; &amp;lt;?php endforeach; ?</description>
+    </item>
+    
+    <item>
+      <title>微博从bo-blog迁移到了emlog。</title>
+      <link>http://xinlogs.com/post/2011-10-25-bo-blog-to-emlog/</link>
+      <pubDate>Tue, 25 Oct 2011 22:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-25-bo-blog-to-emlog/</guid>
+      <description>今天将微博从原来的bo-blog迁移到了emlog
+bo-blog从08年就一直开始使用。感觉还是很不错的。但是一直没怎么更新了，目前很多新功能都不支持。
+其实我就打算让博客可以和新浪微博同步。新浪微博里也有个关联博客的功能，据说可以通过博客的rss内容来同步内容。
+但是我参考网上文章修改了bo-blog模板，让首页里存在 http://www.xinlogs.com/feed&amp;ldquo; title=&amp;ldquo;鑫的方向&amp;rdquo; /&amp;gt; 然后又测试了http://www.xinlogs.com/feed，可以正常访问。 但是新浪微博就是不能同步到我博客的内容。 最后我发现emlog目前的更新很活跃，而且还有个插件是调用新浪微博的api来将博客内容同步到微博的。就开始了我的迁移过程 迁移主要参考了http://bbs.bo-blog.com/thread-28348-1-1.html 原文如下： 转换过程很简单，先下载并安装emlog_4.0.1，再将原BoBlog中的attachment和data文件夹以及附件中的转换工具上传到新装emlog根目录，执行转换工具按照提示运行即可。
+最终可以将BoBlog中的所有数据比较完美地导入emlog_4.0.1，包括原来BoBlog中的附件和自定义URL等等。对于emlog不支持UBB的问题其实应该很好解决：将UBB解析之后再导入数据库即可。由于我的777篇日志绝大部分不含UBB代码所以就没有继续折腾了…… 注意： 我转换后，没有文章的分类了。但是查看数据库的sort表确实存在分类信息。这个时候，只要在后台建立一个分类。然后其他分类就都出现了。感觉转换效果很不错。</description>
+    </item>
+    
+    <item>
+      <title>离线博客工具-菊子曰</title>
+      <link>http://xinlogs.com/post/2011-10-25-write-blog-offline/</link>
+      <pubDate>Tue, 25 Oct 2011 18:30:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-25-write-blog-offline/</guid>
+      <description>因为迁移到了emlog，最近几天一直在鼓弄博客。
+今天又尝试用离线工具写博客了。
+在网站上搜索了下，发现国人开发的菊子曰不错。所以开始了这次尝试
+功能方面日常写文章应该足够了。
+就是如果是程序员用，代码高亮效果很一般 还有就是日志摘要功能，并不能符合emlog的日志摘要，基本只能全篇发上来。感觉如果文章不是很长，建议还是采用在线编辑吧。 再有就是采用了离线发布，将不能自动和新浪微博同步</description>
+    </item>
+    
+    <item>
+      <title>一个关于debian系统管理的站点</title>
+      <link>http://xinlogs.com/post/2011-10-25-debian-administration-site/</link>
+      <pubDate>Tue, 25 Oct 2011 14:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-25-debian-administration-site/</guid>
+      <description>这个站点有很多关于debian系统管理的信息和经验。 不过这个站点对于IE支持不好，页面会出现错位。建议还是采用firefox或者chrome这类的浏览器吧。 网址：http://www.debian-administration.org/ 简介如下，照搬的原文： Debian Administration This site was created as a simple weblog designed to contain interesting and useful information related to the System Administration of Debian GNU/Linux systems. Whilst there are several sites where users can post questions and have answers contributed by other users there are no other sites on the web which are specifically targeted at distributing articles of interest to Debian administrators. This site is designed to fill that void, with content accepted from users.</description>
+    </item>
+    
+    <item>
+      <title>推荐个htc G3 hero比较不错的ROM</title>
+      <link>http://xinlogs.com/post/2011-10-21-htc-g3-hero-bast-rom/</link>
+      <pubDate>Fri, 21 Oct 2011 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-21-htc-g3-hero-bast-rom/</guid>
+      <description>以前一直用ligux出的rom。因为htc G3的硬件原因，个人认为用android 2.1rom最好。刷了2.2和2.3都不是很满意。 原来我一直采用Dauu_SENSE_with_Compacache_BFS_v1.1-signed.zip 挺稳定的，就是速度一般。有时候内存不够了，会自动重启。 这次是在hiapk.com上找到的 新加坡Artlive2.1急速优化版、添加翻页时钟、天气动画；视频为证 这个ROM是先刷上他的ROM，然后再刷一个FlyKernel-13-M518-m352.zip
+FlyKernel是一个用来只能调整CPU性能的补丁，在刷rom的时候，通过压缩包的文件名制定频率。比如上面的M518-m352就是最大和最小频率。 关于这个内核补丁，可以看下面的介绍 http://www.cnrgb.com/flykernel-13 </description>
+    </item>
+    
+    <item>
+      <title>centos 源码安装ruby和rubygems</title>
+      <link>http://xinlogs.com/post/2011-10-20-centos-install-ruby-rubygems/</link>
+      <pubDate>Thu, 20 Oct 2011 23:10:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-20-centos-install-ruby-rubygems/</guid>
+      <description>获得ruby源代码
+wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz  解压并编译ruby
+tar zxvf ruby-1.9.2-p290.tar.gz cd ruby-1.9.2-p290 ./configure --prefix=/usr/local/ruby192 make make install  在/etc/profile最后添加
+export PATH=/usr/local/ruby192/bin:$PATH
+保存后，执行 source /etc/profile
+查看下ruby版本 ruby -v
+下载rubygems1.8.10
+wget http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz  解压并安装rubygems
+tar zxvf rubygems-1.8.10.tgz &amp;lt;br&amp;gt; cd rubygems-1.8.10 ruby setup.rb  安装后用gem -v 可以查看下版本</description>
+    </item>
+    
+    <item>
+      <title>关联bo-blog到新浪微博</title>
+      <link>http://xinlogs.com/post/2011-10-20-boblog-relation-weibo/</link>
+      <pubDate>Thu, 20 Oct 2011 18:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-20-boblog-relation-weibo/</guid>
+      <description>主要参考了http://www.cnwyw.net/post/bo-blog-guan-lian-bo-ke-xin-lang-wei-bo/ 基本就是修改模板里的elements.php文件 将href=&amp;ldquo;feed.php&amp;rdquo;修改为href=http://yourdomain/feed.php </description>
+    </item>
+    
+    <item>
+      <title>给bo-blog加上新浪的微博秀</title>
+      <link>http://xinlogs.com/post/2011-10-20-boblog-add-weiboshow/</link>
+      <pubDate>Thu, 20 Oct 2011 14:09:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-10-20-boblog-add-weiboshow/</guid>
+      <description>首先在新浪微博的“微博小工具”内找到“微博秀”。然后根据自己的需要设置好样式和大小。 从下面的
+“设置完成，获得嵌入代码： ”框内粘贴出代码。 
+回到bo-blog后台，从“常规管理”-&amp;gt;“模块配置”项了，添加一个“侧边模块”，起个名字叫新浪微博。  最后将刚才的代码贴进去。就可以了</description>
+    </item>
+    
+    <item>
+      <title>H3C路由器 tracert超时，解决办法。</title>
+      <link>http://xinlogs.com/post/2011-09-21-h3c-ttl-expires/</link>
+      <pubDate>Wed, 21 Sep 2011 19:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-09-21-h3c-ttl-expires/</guid>
+      <description>单位的H3C路由器和交换机上，tracert总是超时。但是可以正常上网或者ping到目标。 后来查找资料，找到了解决办法。
+解决方法：
+ ip ttl-expires enable ip unreachables enable
+（官方说法这两条命令默认开启，可能跟版本有关，有的默认未开启。）
+官方对这两条命令解释是：
+ip ttl-expires enable命 令用来开启设备的ICMP超时报文的发送功能。undo ip ttl-expires命令用来关闭设备的ICMP超 时报文的发送功能。（缺省情况下，ICMP超时报文发送功能处于开启状 态。）
+需要注意的是，关闭ICMP超时报文发送 功能后，设备不会再发送“TTL超时”ICMP差 错报文，但“重组超时”ICMP差错报文仍会正常发送。
+ip unreachables enable命 令用来开启设备的ICMP目的不可达报文的发送功能。undo ip unreachables命令用来关闭设备的ICMP目 的不可达报文的发送功能。（缺省情况下，ICMP目的不可达报文发送功 能处于关闭状态。） </description>
+    </item>
+    
+    <item>
+      <title>mysqldump备份blob类型内容</title>
+      <link>http://xinlogs.com/post/2011-03-30-mysqldump_blob_field/</link>
+      <pubDate>Wed, 30 Mar 2011 15:09:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-03-30-mysqldump_blob_field/</guid>
+      <description>用mysqldump备份出数据库内容到SQL文件。当我们数据库表有blob类型字段的时候，这个导出的SQL再导入的时候就会因为blob字段内容乱码等原因，不能顺利导入了。
+解决办法：
+在用mysqldump备份的时候，采用&amp;ndash;hex-blob参数，这样备份出来的sql文件，就可以顺利导入了。</description>
+    </item>
+    
+    <item>
+      <title>ruby将DBF文件导入MYSQL库</title>
+      <link>http://xinlogs.com/post/2011-03-22-ruby_import_dbf_to_mysql/</link>
+      <pubDate>Tue, 22 Mar 2011 19:43:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-03-22-ruby_import_dbf_to_mysql/</guid>
+      <description>单位招生项目，需要向MySQL灌入一些数据测试。因为原始数据都是DBF文件，就是foxpro数据库。
+下面是用ruby代码实现的导入功能。
+require &#39;rubygems&#39; require &#39;dbf&#39; require &#39;mysql2&#39; require &#39;iconv&#39; @the_year=&amp;quot;2011&amp;quot; @start_time=Time.now @major_list=[] client = Mysql2::Client.new(:host =&amp;gt; &amp;quot;localhost&amp;quot;, :username =&amp;gt; &amp;quot;root&amp;quot;,:password=&amp;gt;&amp;quot;dxzddp&amp;quot;,:database=&amp;gt;&amp;quot;enroll&amp;quot;)#创建数据库连接 results = client.query(&amp;quot;SELECT major_id FROM major WHERE the_year=&#39;#{@the_year}&#39;&amp;quot;, :as =&amp;gt; :array) results.each do |row| @major_list.push(row[0]) end p @major_list table = DBF::Table.new(&amp;quot;d:/ss.dbf&amp;quot;) table.each do |record| @sfzh=record.sfzh @name=Iconv.iconv(&amp;quot;utf-8&amp;quot;, &amp;quot;gb18030&amp;quot;, record.xm) @sfzh=record.sfzh @ksh=record.ksh @major=@major_list.choice @major2=@major_list.choice @major2=@major_list.choice while @major2==@major @to_student_info=&amp;quot;insert into student_info (student_no,access_pwd,the_year) VALUES (&#39;#{@sfzh}&#39;,&#39;e10adc3949ba59abbe56e057f20f883e&#39;,&#39;#{@the_year}&#39;)&amp;quot; @to_candidate=&amp;quot;insert into candidate (candidate_name,id_card_no,candidate_no,state,has_submitted,the_year) VALUES (&#39;#{@name}&#39;,&#39;#{@sfzh}&#39;,&#39;#{@ksh}&#39;,&#39;A&#39;,&#39;Y&#39;,&#39;#{@the_year}&#39;)&amp;quot; @to_candidate_ideal=&amp;quot;insert into candidate_ideal (candidate_id,first_major,second_major,allow_adjustment,is_living_in_college) VALUES (last_insert_id(),&#39;#{@major}&#39;,&#39;#{@major2}&#39;,&#39;Y&#39;,&#39;Y&#39;)&amp;quot; @to_candidate_score=&amp;quot;insert into candidate_score (candidate_id) VALUES (last_insert_id())&amp;quot; @to_contact_info=&amp;quot;insert into contact_info (candidate_id) VALUES (last_insert_id())&amp;quot; @to_school_info=&amp;quot;insert into school_info (candidate_id) VALUES (last_insert_id())&amp;quot; begin client.</description>
+    </item>
+    
+    <item>
+      <title>mysqldump解决中文乱码问题</title>
+      <link>http://xinlogs.com/post/2011-03-14-mysqldump-encoding/</link>
+      <pubDate>Mon, 14 Mar 2011 14:32:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-03-14-mysqldump-encoding/</guid>
+      <description>我的数据库采用编码如下：
+mysql&amp;gt; show variables like &#39;coll%&#39;; +----------------------+-------------------+ | Variable_name | Value | +----------------------+-------------------+ | collation_connection | latin1_swedish_ci | | collation_database | latin1_swedish_ci | | collation_server | latin1_swedish_ci | +----------------------+-------------------+ 3 rows in set (0.00 sec) mysql&amp;gt; show variables like &#39;character_set%&#39;; +--------------------------+----------------------------+ | Variable_name | Value | +--------------------------+----------------------------+ | character_set_client | latin1 | | character_set_connection | latin1 | | character_set_database | latin1 | | character_set_filesystem | binary | | character_set_results | latin1 | | character_set_server | latin1 | | character_set_system | utf8 | | character_sets_dir | /usr/share/mysql/charsets/ | +--------------------------+----------------------------+ 8 rows in set (0.</description>
+    </item>
+    
+    <item>
+      <title>Mysql设置不区分表名大小写</title>
+      <link>http://xinlogs.com/post/2011-01-13-mysql-tablename-lowercase/</link>
+      <pubDate>Thu, 13 Jan 2011 16:02:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2011-01-13-mysql-tablename-lowercase/</guid>
+      <description>今天遇到个问题，有个程序从Windows导入到Linux的时候，表格全部小写了。但程序里很多DAO全是大写调用。
+Linux默认安装的Mysql是表名区分大小写的。
+这个设置主要是在/etc/my.cnf里面的[mysqld]段，加入如下设置项
+lower_case_table_names = 1   如果设置为0，就是区分大小写。设置为1就是不区分了。</description>
+    </item>
+    
+    <item>
+      <title>病毒测试样本</title>
+      <link>http://xinlogs.com/post/2010-11-28-anti-virus-test-file/</link>
+      <pubDate>Sun, 28 Nov 2010 10:04:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-11-28-anti-virus-test-file/</guid>
+      <description>我们在安装好杀毒软件后，如何测试下效果呢？ 下面的网站给我们提供了病毒测试样本： http://www.eicar.org/anti_virus_test_file.htm</description>
+    </item>
+    
+    <item>
+      <title>监控tomcat内存占用</title>
+      <link>http://xinlogs.com/post/2010-11-26-tomcat-memory-check/</link>
+      <pubDate>Fri, 26 Nov 2010 19:47:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-11-26-tomcat-memory-check/</guid>
+      <description>最近单位给客户部署的一台服务器，主要跑的JAVA应用，一个物业OA系统。经常因为Tomcat内存占用过高而停止响应。
+观察了一下，每次停止响应时候，Tomcat进程占用内存超过1.2G
+初步怀疑是程序不够完善有内存泄露的地方，但是一时半会也找不到具体代码哪里有问题。
+我就写了一个shell不断监控Tomcat进程内存占用，当发现内存占用大于800M，我就自动重启一次Tomcat。
+ #!/bin/sh MEM=`ps aux|grep tomcat|grep startup|awk &#39;{print $6}&#39;` #echo $MEM if [ $MEM -gt 800000 ]; then echo &amp;quot;tomcat mem too large,restart tomcat!&amp;quot; service tomcat restart fi  注意：如果service tomcat restart不能正常重启Tomcat，可以参考我前面写的[CentOS下的Tomcat停止脚本]</description>
+    </item>
+    
+    <item>
+      <title>HeidiSQL一款开源的MySQL图形管理软件</title>
+      <link>http://xinlogs.com/post/2010-11-25-heidisql/</link>
+      <pubDate>Thu, 25 Nov 2010 20:32:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-11-25-heidisql/</guid>
+      <description>以前一直使用Navicat客户端，功能确实强大。不过这个客户端是收费的商业软件。 最近发现有一款HeidiSQL的开源软件，也可以很好的管理MySQL。使用后，发现很不错。这里推荐下 官方介绍： What&amp;rsquo;s this? HeidiSQL is an easy-to-use interface and a &amp;ldquo;working-horse&amp;rdquo; for web-developers using the popular MySQL-Database. It allows you to manage and browse your databases and tables from an intuitive Windows® interface. 放一张官方截图</description>
+    </item>
+    
+    <item>
+      <title>CentOS下的Tomcat停止脚本</title>
+      <link>http://xinlogs.com/post/2010-11-04-stop-tomcat-shell/</link>
+      <pubDate>Thu, 04 Nov 2010 19:23:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-11-04-stop-tomcat-shell/</guid>
+      <description>我在CentOS 5.3 64bit上安装的Tomcat有个小问题，就是不能通过service tomcat stop停止或者server tomcat restart重启。
+我看了下/etc/init.d/tomcat的文件，和以前没有什么不一样，但就是不能正常停止。
+后来我自己修改了/etc/init.d/tomcat文件，改为直接kill进程。目前已经可以正常通过service关闭或者重启tomcat了。
+下面是我/etc/init.d/tomcat文件内容，贴出来留着以后查看。呵呵
+ #!/bin/bash # # Startup script for the tomcat # # chkconfig: 345 80 15 # description: Tomcat is a Servlet+JSP Engine. # Source function library. . /etc/rc.d/init.d/functions export JAVA_HOME=/usr/local/jdk1.6.0_16 export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin export CATALINA_BASE=/usr/local/tomcat export CATALINA_HOME=/usr/local/tomcat export CATALINA_TMPDIR=/usr/local/tomcat/temp export JRE_HOME=/usr/local/jdk1.6.0_16 start(){ if [ -z $(/sbin/pidof java) ]; then echo &amp;quot;Starting tomcat&amp;quot; /usr/local/tomcat/bin/startup.sh touch /var/lock/subsys/tomcat else echo &amp;quot;tomcat allready running&amp;quot; fi } stop(){ if [ !</description>
+    </item>
+    
+    <item>
+      <title>通过VPN获取eMule的HighID</title>
+      <link>http://xinlogs.com/post/2010-10-27-emule-vpn-highid/</link>
+      <pubDate>Wed, 27 Oct 2010 20:46:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-10-27-emule-vpn-highid/</guid>
+      <description>一般单位里，我们都是通过单位网关上网。这种情况下打开eMule肯定获取到的是LowID（低ID）。那么既然我们可以通过VPN来翻墙，有没有办法通过VPN来获取到eMule的HighID（高ID）呢？
+答案是肯定的：可以。
+只要我们将VPN服务器的外网IP上的对应端口映射到我们VPN客户端获取到的IP端口上就可以。
+我的VPN服务器，就是跑在我这台博客服务器上的openvpn server。笔记本采用openvpn gui客户端连接。
+我笔记本分到的ip 10.8.0.2  vpn server的外网ip：204.74.212.217 vpn server的tap0 ip地址：10.8.0.1  下面是我的iptables配置：
+加入如下两条规则
+ iptables -t nat -A PREROUTING -p tcp -d 204.74.212.217 --dport 13242 -j DNAT --to 10.8.0.2:13242 iptables -t nat -A PREROUTING -p udp -d 204.74.212.217 --dport 11324 -j DNAT --to 10.8.0.2:11324  其中13242和11324端口，要和自己安装的emule端口对应。这个可以在emule的选项-》连接界面查看。
+以上配置后，还不能获取高ID的话，基本都是windows防火墙原因了。
+修改win7 防火墙
+在“高级安全Windows防火墙”中的“入站规则”和“出站规则”中，都允许eMule的通过。
+然后断开eMule连接，重新连接一次。就可以获取高ID了。</description>
+    </item>
+    
+    <item>
+      <title>瑞豪开源(RASHOST)VPS10个月使用感受</title>
+      <link>http://xinlogs.com/post/2010-10-11-rashost-vps/</link>
+      <pubDate>Mon, 11 Oct 2010 16:18:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-10-11-rashost-vps/</guid>
+      <description>从2009年12月算来，我使用瑞豪开源(RASHOST)提供的VPS已经10个月了，下面说说我的感受。 我选择的是128M Linux VPS，系统采用的CentOS 5 选择理由：因为我就是跑自己的blog，还有开openvpn用来访问一些被墙的站点，所以不需要太多内存。当然这也归功于瑞豪开源(RASHOST)他们的技术实力优秀。他们提供的VPS 系统都是经过裁剪和优化的。默认启动系统只需要20多M内存占用。 10个月使用下来，感觉瑞豪开源(RASHOST)提供的VPS相当稳定，10个月中将就出现过一次线路问题，大约不到1个小时就解决了。虽然我测试过瑞豪开源(RASHOST)提供的VPS网络速度不是很快，从北京ping过去大约300-400ms，但是很稳定。 再说说服务，在使用vps过程中，开始的时候总会有些这样那样的问题，瑞豪开源(RASHOST)是通过提交服务单进行解决的。每个服务单都有记录，会很好的解决我遇到的问题。感谢瑞豪开源(RASHOST)提供的技术支持。 最后就是方便的支付方式。我选择的是3个月支付一次。一般提前10天就会收到他们的邮件提示，按照提供的账单，通过支付宝就可以完成支付。不需要人工开通和确认了。只要支付完成，后台就显示支付成功。VPS的到期时间也自动计算好了。 我主要是通过nginx+fastcgi+php跑blog，然后又安装了openvpn来做vpn服务器。优化后，大约用35-40M内存，当然这个随着访问量增大而增大。但是感觉个人128M足以。如果以后内存吃紧，通过一些瑞豪开源(RASHOST)的推广活动，还可以免费增加部分内存。这个活动很好，我最喜欢了。 目前我已经续费到2011年1月。一直使用良好，在此推荐下。</description>
+    </item>
+    
+    <item>
+      <title>Hero G3 android 2.1下好用的导航软件</title>
+      <link>http://xinlogs.com/post/2010-08-26-lingtu-on-hero-android21/</link>
+      <pubDate>Thu, 26 Aug 2010 15:08:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-08-26-lingtu-on-hero-android21/</guid>
+      <description>Hero G3在升级到Android 2.1后就没有什么好用的导航软件了。google map需要流量，这个等于导航的时候随时收费，偶尔用用还可以，不适合长期使用。
+凯立德在anroid 2.1有可用版本，但是操作体验比较差，经常按个按钮，半天没有反映需要反复按。而且我还遇到过不能定位的问题，后来重启了手机才解决。
+不过现在天行者10终于可以运行在android 2.1下面了。我申请了测试号，感觉使用效果不错。以前andorid 1.5的时候，就是用的天行者9。我习惯要去什么地方都先到www.51ditu.com查查，因为都是图灵的资源，所以51ditu上找到了，基本天行者里肯定可以导航。
+目前缺点：没有横屏，开车的时候手机一般都横着放，不是很方便。
+触摸反映不灵敏，有的按键也是需要反复按几次才有反映。
+下面放几张运行截图（我手机hero g3,系统是自己刷的android 2.1）</description>
+    </item>
+    
+    <item>
+      <title>CENTOS下安装MUDOS跑侠客行</title>
+      <link>http://xinlogs.com/post/2010-08-26-centos-install-mudos/</link>
+      <pubDate>Thu, 26 Aug 2010 15:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-08-26-centos-install-mudos/</guid>
+      <description>最近在放假，我又玩了玩很久以前的网络游戏北美侠客行。一个纯文字的MUD游戏。而且自己在CentOS下也架设了一个，下面就说说我的安装过程，给自己做个记录，怕以后忘记。
+要架设一个MUD游戏，需要MUDOS和MUDLIB两部分。这里简单解释一下，其实我也刚接触，有不对的地方还望见谅。
+MUDOS我理解就是一个跑MUD游戏的平台或者理解为模拟器，只要符合MUDOS要求的MUDLIB都可以通过MUDOS驱动起来。
+MUDLIB才是具体游戏的代码，各种MUD游戏其实就是MUDLIB不同，而底层平台基本都是MUDOS。
+当然现在除了MUDOS还可以采用FluffOS作为运行平台。
+下面贴个我架设的侠客行MUD截图（采用XKX早期代码修改来的，和北美侠客行最接近） 下载MUDOS 我采用的是MudOSv22pre11 For Linux 从北大侠客行官方网站下载的。
+下载MUDLIB
+至于mudlib才是能不能玩的重点，网上可以找到很多版本。我主要下载了如下几种
+金庸梦（个人感觉很完整的一套代码，基本是基于98年xkx修改而来）
+xkx2001（这个版本是早期一个xkx版本，和北美xkx比较接近）
+xkx6dao（和早期xkx最接近的一个版本）
+以上三个版本都可以在windows下正常运行，我们要做的就是选择一款移植到linux下。
+我是基于xkx6到的mudlib，将xkx2001和金庸梦的部分代码加入过来。这样基本实现了北美侠客行的大部分任务系统，包括斧头帮、镖局、门派任务等
+安装mudos
+1、将我们下载的MudOSv22pre11 For Linux解压缩，然后进入到解压后的目录。
+2、运行 ./build.MudOS
+提示如下
+Preparing to build standard MudOS driver ... Trying out some stuff to see what works; ignore errors ... gmake: Nothing to be done for `nothing&#39;. ./build.MudOS: line 170: xlc: command not found mkdir: ÎÞ·¨´´½¨Ä¿Â¼¡®tmp¡¯: ÎÄ¼þÒÑ´æÔÚ install£ºÎÞÐ§Ñ¡Ïî -- f Çë³¢ÊÔÖ´ÐÐ¡®install --help¡¯À´»ñÈ¡¸ü¶àÐÅÏ¢¡£ rm: ÎÞ·¨É¾³ý¡®tmp/insttest¡¯: Ã»ÓÐÄÇ¸öÎÄ¼þ»òÄ¿Â¼ mkdir: ÎÞ·¨´´½¨Ä¿Â¼¡®obj¡¯: ÎÄ¼þÒÑ´æÔÚ ***************** Configuration completed ************** Installing MudOS on Linux Using install -c to install binaries in .</description>
+    </item>
+    
+    <item>
+      <title>周末给老婆买了个HTC legend(G6)玩</title>
+      <link>http://xinlogs.com/post/2010-07-28-htc-g6/</link>
+      <pubDate>Wed, 28 Jul 2010 19:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-07-28-htc-g6/</guid>
+      <description>我一直使用G3，老婆看功能强大，打算也购买一个玩。 去了中关村，挑来挑去，最后老婆还是看上了G6. 感觉G6的金属外壳、后盖的设计都很好，而且有闪光灯。这些都是比较好的设计。 不过数据线接口变了，不在和G3通用，这个不太喜欢。 按键也感觉没有G3的好，觉得按键很粗糙，一按就咔咔的响（不是按键发音哦，纯机械声音）。 没有了通话和挂机键，也感觉不方便。 不过老婆还是挺喜欢的。 购买就是注意别买到阿三机器就可以了。（好像目前阿三机器也可以通过降级破解了）</description>
+    </item>
+    
+    <item>
+      <title>Hero 使用Android 2.1 ROM 心得。</title>
+      <link>http://xinlogs.com/post/2010-07-12-htc-use-android-2-1/</link>
+      <pubDate>Mon, 12 Jul 2010 21:49:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-07-12-htc-use-android-2-1/</guid>
+      <description>上次介绍了下使用Android 2.1的体会，当时因为导航等问题，最终放弃了2.1系统，继续刷回1.5系统用了。 经过这段时间，android 2.1系统不断完善，导航问题也有了突破。感谢各位高手贡献自己的力量。 这次我刷的还是F大制作的Rom：Daguu Sense v1.0(Official RUU,BFS,Compcache,SSH..) RADIO采用最新的：63.18.55.06PU_6.35.15.14 这个Rom确实达到了高效、干净、稳定的目的。 导航 以前我一直没有采用android 2.1的很大原因就是导航问题。android 2.1原来只能使用高德等导航，效果很不好。KLD需要替换libgps.so使用，而且稳定性不好。我最爱用的天行者根本用不了。 现在论坛上的牛人终于找到了KLD需要替换libgps.so的具体原因，并且放出了修改版本，可以不用替换libgps.so文件完美运行了。 我测试结果是直接安装后，搜星定位都很快。路测鸟巢到五棵松全程12Km，也很稳定，一切正常。 蓝牙 蓝牙在1.5只能用耳机，不能传文件。现在android 2.1下我测试用诺基亚E63给hero传文件，一切正常。 Openvpn 这个Rom安装后，自带openvpn setting软件，设置好后，连接openvpn一切正常。 耗电 反正hero基本是1-2天一充电，android 2.1确实比1.5耗电，但基本还是1-2天一充，没有什么变化。 小结 随着性能、稳定性提升，导航问题解决。目前我已经采用android 2.1系统了，而不是像以前一样刷来玩玩，然后还要刷回1.5日常用。感觉目前hero下的android2.1基本已经满足大多数用户正常使用了。</description>
+    </item>
+    
+    <item>
+      <title>win7安装oracle10g完美解决方案</title>
+      <link>http://xinlogs.com/post/2010-07-12-win7-install-oracle/</link>
+      <pubDate>Mon, 12 Jul 2010 16:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-07-12-win7-install-oracle/</guid>
+      <description>最近由于项目需要，要求安装oracle10g数据库进行开发。在安装的时候碰到一些问题，这里记录下解决办法。
+我的系统是win7 中文32位旗舰版。
+数据库是oracle10g
+问题1
+在安装的时候，首先是系统检查。因为默认oracle是不支持win7系统的，所以我们需要修改下文件，让它支持。
+具体办法：
+找到database\stage\prereq\db\refhost.xml文件，在文件里添加如下内容
+ &amp;lt;!--Microsoft Windows 7--&amp;gt; &amp;lt;OPERATING_SYSTEM&amp;gt; &amp;lt;VERSION VALUE=&amp;quot;6.1&amp;quot;/&amp;gt; &amp;lt;/OPERATING_SYSTEM&amp;gt;  问题2 上面只是检查系统是否符合要求，这个时候如果运行setup.exe还有可能出现错误提示。这个时候只要我们右键点setup.exe文件，然后选择“兼容性”标签，勾选上“以兼容模式运行这个程序”并在列表里选择“windows xp(service pack 3)”。然后记得安装的时候选择基本安装模式，不要用高级模式。高级模式到后面还是不能通过。</description>
+    </item>
+    
+    <item>
+      <title>HTC Hero 2.1 体验</title>
+      <link>http://xinlogs.com/post/2010-06-22-htc-hero-android-2-1/</link>
+      <pubDate>Tue, 22 Jun 2010 11:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-06-22-htc-hero-android-2-1/</guid>
+      <description>最近随着官方放出的hero g3 android 2.1 ROM，开很有很多技术高人也发布了自己的修改、优化版本。 我也忍不住开始刷新手机了。 我选择的是Daguu Espresso v1.2 By FlZyGaMeUp Release ，原因很简单，我之前用的ROM就是F大发布的FLZYUP Custom ROM v1.6 (Hero Android 1.5固件最终版)。所以这次依然选择了他制作的ROM 刷新要求 Recovery版本：recovery-RA-hero-v1.6.2
+Radio版本：63.18.55.06OU_6.35.15.01 以上这些都可以到机锋网找到。 刷新后，界面确实很漂亮。使用起来也感觉比1.5的ROM多出很多功能。不过速度确实不如以前1.5的ROM了。 我是晚上刷的，用到第2天中午，觉得还是不如1.5的ROM，又刷回FLZYUP Custom ROM v1.6 (Hero Android 1.5固件最终版)这个版本了。 主要问题 如果就android 2.1的ROM本身来说，已经接近完美了。速度和耗电还不太好，不过有一种说法是只要不是官方的内核，耗电就会高。 而F大这次就是没有采用官方内核，而是自己编译的。 不过我认为最大的问题是导航软件的兼容性，因为我经常用手机导航。以前1.5的时候，先后使用过KLD、领航者、高德和天行者。 KLD的地图和导航都不错，但是明显不是为android开发的，按键很不好用，有时候点半天都没有反应。后来的2010年4月的一个新版本，有所改进。 领航者和高德的路线规划和地图都不满意。 最后我一直在使用天行者9，这个软件很满意。地图基本和www.51ditu.com网站的一样。外出只要在51ditu.com可以找到地方，就不用担心手机导航不到。反正感觉北京使用，天行者9最好了。 而上面这些在android 1.5ROM正常的导航软件，到了android 2.1很少可以正常工作。 天行者9是根本不能运行在2.1的ROM KLD需要修改libgps.so文件，然后还有可能信号不稳定，经常断。 领航者和高德倒是可以使用，问题这两个软件实现效果和地图都很差。 还有个城际通，可以安装，但是出现第一屏提示后，就自动退出了。 由于以上原因，我还是刷回了android 1.5 ROM，期待更完美的版本了和更好的导航软件出现了。</description>
+    </item>
+    
+    <item>
+      <title>很久没有写博客了，前几天得阑尾炎了。</title>
+      <link>http://xinlogs.com/post/2010-06-02-appendicitis/</link>
+      <pubDate>Wed, 02 Jun 2010 22:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-06-02-appendicitis/</guid>
+      <description>2010年5月27日。。。上午在单位突然得阑尾炎了。。。郁闷呀。 被同事直接给送医院了，老婆也及时赶过来了。 现在好多了，上来记录下。等好了以后，找时间切除阑尾吧。。。。</description>
+    </item>
+    
+    <item>
+      <title>哀悼日网站和bo-blog变灰色设置</title>
+      <link>http://xinlogs.com/post/2010-04-21-mourning-css-setup/</link>
+      <pubDate>Wed, 21 Apr 2010 10:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-04-21-mourning-css-setup/</guid>
+      <description>根据国务院文件，5.19-5.21为全国哀悼日，在此期间，全国和各驻外机构下半旗志哀，停止公共娱乐活动，外交部和我国驻外使领馆设立吊唁簿。5月19日14时28分起，全国人民默哀3分钟，届时汽车、火车、舰船鸣笛，防空警报鸣响。 Admin5与很多草根网站都将整站换成素装。并建议中国所有站点更换为素装。
+为方便站点哀悼，特提供css滤镜代码，以表哀悼。以下为全站CSS代码。
+html { filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); }
+使用方法：这段代码可以变网页为黑白，将代码加到CSS最顶端就可以实现素装。建议全国站长动起来。为在地震中遇难的同胞哀悼。
+如果网站没有使用CSS，可以在网页/模板的HTML代码和 之间插入：
+ &amp;lt;style&amp;gt; html{filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);} style&amp;gt;  有一些站长的网站可能使用这个css 不能生效，是因为网站没有使用最新的网页标准协议
+ &amp;lt;html xmlns=“http://www.w3.org/1999/xhtml”&amp;gt;  请将网页最头部的替换为以上代码。
+有一些网站FLASH动画的颜色不能被CSS滤镜控制，可以在FLASH代码的和之间插入：
+ “false” name=“menu”/&amp;gt; “opaque” name=“wmode”/&amp;gt;  最简单的把页面变成灰色的代码是在head 之间加  &amp;lt;style type=“text/css”&amp;gt; html { FILTER: gray } style&amp;gt;  下面再看看如何给上面这些应用到bo-blog的页面中呢。
+首先我们到bo-blog的根目录找到我们的template模板目录，在其中找到我们使用的模板所采用的CSS文件。在文件最后加入
+html { filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); }  另在哀悼日或遇难的新闻，所有专题和主题 图片上不能使用红色标题。</description>
+    </item>
+    
+    <item>
+      <title>开启或者关闭MYSQL的query log(查询日志)</title>
+      <link>http://xinlogs.com/post/2010-04-05-disable-mysql-query-log/</link>
+      <pubDate>Mon, 05 Apr 2010 19:45:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-04-05-disable-mysql-query-log/</guid>
+      <description>最近在整理服务器的时候，发现mysql的查询日志文件占用了很多空间。这个查询日志文件部分内容如下，随着查询增加，会越来越大
+ Tcp port: 3306 Unix socket: /tmp/mysql.sock Time Id Command Argument 100404 8:36:49 1 Connect zzz@localhost on 1 Init DB zzz 1 Query SET NAMES &#39;utf8&#39; 1 Query SELECT * FROM `boblog_counter` LIMIT 0,1 1 Query SELECT `blogid`,`pubtime`,`edittime`,`blogalias` FROM `boblog_blogs` WHERE `property`&amp;lt;2 ORDER BY `pubtime`DESC LIMIT 0, 1500 1 Quit 100404 8:38:01 2 Connect admin@localhost on 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT * FROM `cmseasy_settings` WHERE `tag`=&#39;table-fieldset&#39; ORDER BY 1 DESC limit 1 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT * FROM `cmseasy_user` WHERE userid&amp;gt;0 ORDER BY 1 DESC limit 1 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT count(typeid) as rec_sum FROM `cmseasy_type` 2 Query SELECT * FROM `cmseasy_type` ORDER BY `order`,1 limit 1000 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT count(1) as rec_sum FROM `cmseasy_friendlink` WHERE state&amp;gt;0 and linktype=1 2 Query SELECT * FROM `cmseasy_friendlink` WHERE state&amp;gt;0 and linktype=1 ORDER BY listorder asc,id limit 20 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT count(1) as rec_sum FROM `cmseasy_friendlink` WHERE state&amp;gt;0 and linktype=1 2 Query SELECT * FROM `cmseasy_friendlink` WHERE state&amp;gt;0 and linktype=1 ORDER BY listorder asc,id limit 20 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query SELECT * FROM `cmseasy_templatetag` WHERE name=&#39;å~E¬å~O¸ç®~@ä»~K&#39; ORDER BY 1 DESC limit 1 2 Init DB zzz 2 Query SET NAMES &#39;utf8&#39; 2 Query SET sql_mode=&#39;&#39; 2 Query Describe cmseasy_archive 2 Query SELECT count(1) as rec_sum FROM `cmseasy_archive` WHERE typeid in (2) and checked=1 and (state IS NULL or state&amp;lt;&amp;gt;&#39;-1&#39;) 2 Query SELECT * FROM `cmseasy_archive` WHERE typeid in (2) and checked=1 and (state IS NULL or state&amp;lt;&amp;gt;&#39;-1&#39;) ORDER BY aid desc limit 4  其实记录的都是mysql执行的一些select语句，对于正常运行的服务器，我觉得基本没有必要保留这些日志。</description>
+    </item>
+    
+    <item>
+      <title>一款Linux下同步备份文件的好软件DROPBOX</title>
+      <link>http://xinlogs.com/post/2010-04-05-vps-dropbox-install/</link>
+      <pubDate>Mon, 05 Apr 2010 16:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-04-05-vps-dropbox-install/</guid>
+      <description>原来一直用tar、sync等软件实现备份。需要些脚本还要找一台其他服务器进行同步。现在有了DROPBOX这个网站提供的服务，一切都变容易了。
+DROPBOX网站： http://www.dropbox.com/ DROP功能： 偷懒直接把官方介绍帖过来了。主要就是免费提供2G的同步空间，可以自动同步文件并保留文件的历史版本
+Dropbox Features File Sync Dropbox allows you to sync your files online and across your computers automatically. 2GB of online storage for free, with up to 100GB available to paying customers. Sync files of any size or type. Sync Windows, Mac and Linux computers. Automatically syncs when new files or changes are detected. Work on files in your Dropbox even if you&amp;rsquo;re offline. Your changes sync once your computer has an Internet connection again.</description>
+    </item>
+    
+    <item>
+      <title>支付宝支付godaddy的郁闷经历</title>
+      <link>http://xinlogs.com/post/2010-04-05-alipay-godaddy/</link>
+      <pubDate>Mon, 05 Apr 2010 14:55:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-04-05-alipay-godaddy/</guid>
+      <description>最近帮朋友弄了个网站并注册了域名。
+注册域名的时候，选择域名注册商，我原来用的namecheap.com 后来网上看很多人推荐name.com和godaddy.com。
+因为godaddy.com支持支付宝，我就选择了godaddy来注册。
+其实上面提到的三家都不错，godaddy域名价格最便宜。按照网站提示注册，购买域名，然后支付宝付款。
+郁闷就开始。。。。
+支付宝显示付款成功，但是godaddy购买的域名还在购物车中，并没有购买成功。
+我开始发邮件询问godaddy是什么情况。。。下面是我接到的回复。
+ Thank you for contacting customer support. Unfortunately, products purchased with Alipay may not be available for up to 13 hours while Alipay confirms that the funds have been received. A receipt does not display until the products are available in the account. If this time frame has passed since your initial purchase, please let us know so we may troubleshoot further. I apologize if I have misunderstood your question.</description>
+    </item>
+    
+    <item>
+      <title>HTC hero g3 openvpn设置</title>
+      <link>http://xinlogs.com/post/2010-03-17-htc-hero-openvpn/</link>
+      <pubDate>Wed, 17 Mar 2010 17:53:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-03-17-htc-hero-openvpn/</guid>
+      <description>现在YouTube和google博客等站点都被屏蔽，为了打破限制，只能用vpn来穿越了。
+原来一直用pptpd类型vpn，这种类型速度快，但是要求防火墙或者网关支持。对内外支持不好（反正我在单位和家里歌华宽带都不支持）
+后来改用openvpn类型的vpn了，发现虽然openvpn配置麻烦，需要安装客户端。但却是对内网支持良好，穿透能力强。
+openvpn可以支持多系统（服务器我肯定用linux，这里多系统主要指客户端）
+Windows系统可以采用openvpn gui，这个在我博客以前文章提到了，今天要说的是我的手机，htc hero这次也可以让手机连接openvpn服务器上youtube等站点了。
+手机型号及系统
+我的手机是HTC hero g3
+采用的ROM是Flyzup制作的基于android 1.5修改的。
+Rom可以到Flyzup网站下载 http://www.innovative-space.com/2010/02/21/flzyup-custom-rom-v1-6-final-release/
+其实只要手机用的Rom可以支持openvpn，存在tun.so文件就可以
+安装相关软件
+首先需要需要安装openvpn，这个软件我们可以到下面地址下载已经编译好的版本。因为是static编译的，所以不需要任何动态库支持直接解压就可以使用。 http://github.com/downloads/fries/android-external-openvpn/openvpn-static-2.1.1.bz2
+将解压后得到的openvpn-static-2.1.1文件改名为openvpn 并拷贝到手机的/system/xbin/目录下
+我是采用手机上安装的Better Terminal Emulator Pro来操作的，也可以用adb连接上usb操作。
+有了openvpn后，我们还要创建两个软连接才可以让后面的openvpn顺利建立连接
+用Better Terminal Emulator Pro进入终端模式，输入如下命令
+mkdir /system/xbin/bb ln -s /system/xbin/ifconfig /system/xbin/bb/ifconfig ln -s /system/xbin/route /system/xbin/bb/route  上面创建两个命令的软连接，是因为后面安装的TunnelDroid软件，总是调用/system/xbin/bb目录下的命令，如果没有命令，就会出错。
+用google的电子市场，查找TunnelDroid软件，安装TunnelDroid软件。
+配置TunnelDroid
+其实和配置Windows下的客户端一样，也需要一个配置文件和3个密钥文件
+我们在sd卡的跟目录创建openvpn目录
+在openvpn目录放入client.ovpn配置文件和ca.crt、client-1.crt和client-1.key密钥文件
+这样启动TunnelDroid后，就会出现client.ovpn的选项，直接选择连接就可以。上面的配置文件和密钥，我都是从配置好的Windows机器拷贝过来的。
+目前我测试的android手机、windowsxp、windows7和Linux全部都可以连接openvpn服务器。</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.3下OpenVPN安装和Win7下OpenVPN GUI安装</title>
+      <link>http://xinlogs.com/post/2010-03-15-openvpn-install/</link>
+      <pubDate>Mon, 15 Mar 2010 14:28:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-03-15-openvpn-install/</guid>
+      <description>本来我是在美国的VPS服务器上安装的pptp vpn，这个vpn可以用windows自带的拨号连接，配置也很方便。刚配置好的时候很好用，可以开youtube也可以访问一些被封闭的站点。但是后来家里的歌华有线好像调整了一些路由配置，导致我在家里就不能连接vpn了。单位也不能连接。我用老婆家里的adsl尝试连接正常，用联通3G连接也正常。。。。这个既然是网络的问题，估计个人也解决不了了
+最近单位也开始搞起来封锁了，开心、verycd等都被封。。。又不能用pptpd vpn了。。。看来该想想其他办法了。代理尝试了，不管用，看来不是基于域名的限制。 于是就开始尝试采用openvpn了。
+参考了
+http://www.throx.net/2008/04/13/openvpn-and-centos-5-installation-and-configuration-guide/
+http://www.xiaohui.com/dev/server/20070514-install-openvpn.htm
+2010年10月14日更新
+加入官方CentOS下,iptables规则修改.保证顺利nat上网
+整体方案
+采用位于美国的CentOS 5.3 Linux服务器搭建openvpn服务器，并通过iptables的nat功能使openvpn服务器当做客户端网关。
+客户端安装OpenVPN GUI程序连接服务器
+服务器
+服务器采用位于美国的vps,系统CentOS 5.3
+安装openvpn作为vpn服务器软件
+OpenVPN服务器安装
+kernel 需要支持 tun 设备, 需要加载 iptables 模块.
+检查 tun 是否安装:
+modinfo tun 或者 find / -name tun.o -print  安装需要的相关软件
+ yum install rpm-build yum install autoconf.noarch yum install zlib-devel yum install pam-devel yum install openssl-devel  安装环境准备好后，我们下载需要安装的软件。一共需要下载两个软件openvpn 2.0.9和lzo-1.08-4
+wget http://openvpn.net/release/openvpn-2.0.9.tar.gz wget http://openvpn.net/release/lzo-1.08-4.rf.src.rpm  安装lzo
+rpmbuild --rebuild lzo-1.08-4.rf.src.rpm rpm -Uvh /usr/src/redhat/RPMS/i386/lzo-*.</description>
+    </item>
+    
+    <item>
+      <title>HP台式机器，ghost系统后，提示windows could not start</title>
+      <link>http://xinlogs.com/post/2010-03-12-hp-computer-ghost-problem/</link>
+      <pubDate>Fri, 12 Mar 2010 16:36:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-03-12-hp-computer-ghost-problem/</guid>
+      <description>今天单位一台HP dx7518的台式机器，ghost了一个winxp系统。但是只要一开机，就提示
+windows could not start because of a computer disk hardware configuration problem could not read from the selected boot disk check boot path and disk harware please check the windows documentation about hardware disk configuation and your hardware refer once manuals for additional information  开始我以为是硬盘的设置问题，后来发现硬盘已经设置为IDE模式了。
+后来网上查找，发现是和BIOS里的WDRT Support选项有关系。。。
+解决办法
+开机进入bios设置，选择Power management Setup 再选择WDRT Support 将后面值修改为disable
+WDRT SUPPORT：watchdog resource table 一种加密狗。通过这种加密保护来拒绝安装非随机配备的操作系统。同样，全系的HP 家用、商用台式机、笔记本，进行GHOST安装后报错，也可以用此方法解决。</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.4 基于HP Proliant DL380 G5服务器配置Modular Smart Array 1000存储</title>
+      <link>http://xinlogs.com/post/2010-03-12-hp-msa1000-dl380g5-centos5/</link>
+      <pubDate>Fri, 12 Mar 2010 14:36:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-03-12-hp-msa1000-dl380g5-centos5/</guid>
+      <description>原来单位的存储一直是分两个800G的区，挂在到Windows下。Windows的系统总要担心病毒，所以打算迁移到CentOS Linux下。
+参考了http://blog.s135.com/post/415/这篇文章，但是他的文章里是单控制器，并且没有用到光纤。所以配置上有些不同
+硬件配置
+ 一台HP MSA 1000存储设备（包含两个Modular Smart Array 1000控制器） 一台HP Storage SAN 4/8光纤交换机 一台HP Proliant DL380 G5 2U服务器 七块SCSI 300G硬盘 一块HP StorageWorks FC1142SR 4GB PCI-E 光纤卡  从两个Modular Smart Array 1000的控制器后面连接光纤到光纤交换机。然后将光纤卡安装到服务器上，用光纤连接光纤卡到光纤交换机。
+软件配置
+先对各种硬件的fireware进行下更新。
+从惠普网站下载update fireware光盘，下载的文件为firmware-8.60-0.zip，大小463M左右，然后解压刻成光盘
+下载地址ftp://ftp.hp.com/pub/softlib2/software1/cd/p1040529012/v53483/firmware-8.60-0.zip
+用光盘启动服务器，然后安装提示做就可以。它会更新网卡、服务器等设备的fireware。都是自动检测并更新的，很简单
+确保各种fireware都更新后，下面需要用到smartstart光盘来对存储进行配置了
+从惠普网站下载smartstart光盘，下载的文件smartstart-8.30-0-x86.zip，大小576M左右，也是解压刻录光盘
+下载地址ftp://ftp.hp.com/pub/softlib2/software1/cd/p1040463476/v49882/smartstart-8.30-0-x86.zip
+然后用光盘启动服务器，按照提示进入后，选择第2项配置存储卡，第一项是用来安装操作系统的，我发现没有Linux的操作系统。。。都是Windows系列。
+可以发现服务器自己的raid卡 HP Smart Array E200和MSA 1000存储。
+我是先将服务器的3块硬盘组成一个Raid 5，然后再配置MSA 1000的存储，也是将7块盘组成Raid 5。我看了下资料，说raid 6比raid5要损失8%-15%的性能，但是可以保证同时坏2块盘不丢失数据。不过我觉得raid5够用了。
+因为是双控制器，我这里的fireware是4.48所以采用的是active/standby模式。如果打算用active/active模式，需要更新fireware到7.0版本
+用smartstart光盘做好raid后，就可以给服务器安装系统了。
+安装CentOS 5.4 64bit
+安装CentOS 5.4 64bit版本前，先将连接到服务器的光纤拔掉，要不系统总是提示/dev/sda不可读取，这里的sda就是我们存储。 一切安装正常安装就可以。
+正常安装后，连接好光纤，再启动服务器。
+这个时候因为没有安装驱动，服务器在启动过程中会报很多end_request: error
+而且我还发现如果不安装驱动，我们可以通过fdisk -l查找到存储设备，但是每次重启或者存储关机再开，存储的设备名都会变，有时候是/dev/sda有时候是/dev/sdb。所以很难在/etc/fstab里写入mount的配置。
+安装HBA卡驱动
+到HP网站下载驱动 http://h20000.</description>
+    </item>
+    
+    <item>
+      <title>win7下使用联通无线上网卡HUAWEI E1750</title>
+      <link>http://xinlogs.com/post/2010-02-12-huawei-e1750-on-win7/</link>
+      <pubDate>Fri, 12 Feb 2010 18:29:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-02-12-huawei-e1750-on-win7/</guid>
+      <description>老婆单位年底搞活动，抽奖中了一个联通的无线上网卡。型号HUAWEI E1750
+本来打算给我笔记本用的，我系统是Windows 7。结果发现用不了，安装上以后，无线上网软件提示找不到设备。。。。。。
+解决办法
+让Windows 7自动找驱动，肯定是没戏了。用光盘自带软件的驱动也不灵。后来到HUAWEI网站查找最近驱动，最终下面网站找到了相关更新
+http://www.huaweidevice.com/cn/downloadCenter.do?method=doListSoftwareid=1&amp;amp;fla y=findsoftwareName=E1750
+E1750 E1750-WINMACB300D00SP04C112( U TPS11[1].301.08.24.112_MAC11.3 01.06.07.112)(China Unicom) China Unicom 2009-12-23  以上是Win7下可以使用的驱动更新。大约28M
+安装步骤是先安装Mobile_Card_Driver_3.09.exe驱动，然后正确识别设备后，运行UTPS11.301.08.24.112_MAC11.301.06.07.112.B433.exe更新设备的固件。最后再安装无线上网软件。
+可是我安装文档的方法，在Win7下并没有成功，运行UTPS11.301.08.24.112_MAC11.301.06.07.112.B433.exe更新的时候，总是提示没有找到设备或者正在有软件占用设备或者没有管理员权限。。。。。
+后来找了一台WinXP系统的机器，按照文档步骤一次成功。
+然后再将更新过的E1750插到Win7上面，就可以自动识别设备了。识别成功后如下图。
+这样继续安装无线上网软件就可以正确识别并上网了。下面是正确识别后的截图</description>
+    </item>
+    
+    <item>
+      <title>我的新手机HTC hero g3</title>
+      <link>http://xinlogs.com/post/2010-02-02-my-htc-hero-mobile/</link>
+      <pubDate>Tue, 02 Feb 2010 16:44:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-02-02-my-htc-hero-mobile/</guid>
+      <description>关注HTC hero G3很久了，大约从10月份开始吧。当时就和老婆说生日打算换个手机，后来生日当天去中关村看了看，但是没有购买，报价3000。关键是不知道怎么选购。回来后网上做功课，查询论坛和淘宝。最后决定在淘宝的一家北京实体店购买。在木樨园桥附近。2010年1月25日周一购买的。
+购买的最终手机价格是2860元，又选购了8G TF卡，一块MOMAX电池+座充+车充+手机套。3370元。
+购买后，由卖家给刷安逸1.2的ROM并给8G卡预装一些软件。
+整体感觉比我原来用的windows手机eten x800速度快了不少。android系统也很漂亮。
+我的联系人是先用Win7的windows mobile设备管理将原来windows手机的联系人导出到outlook，最后导出到excel并生成cvs文件。
+然后导入到Gmail邮件的通讯录。这样通过hero G3的同步gmail联系人，就可以导入到新手机了。
+感觉和gmail配合的相当好。短信也可以备份到gmail保存。
+刷机
+手机买来就开始装软件，尝试导航，使用感觉不错。不过在论坛学习，发现很多系统都比我这个新，就产生了刷机的想法。
+开始先尝试刷radio。radio是负责手机通讯的模块，可以理解为电话用的驱动吧。
+我原来的版本比较低，自己先尝试刷了63.18.55.06JU_6.35.09.26最新版本。
+刷radio办法
+机器买来的时候，又商家默认刷了啊兴的2.5 recovery。我就用了一个1G的卡，格式化为FAT32文件系统。将下载的radio更新文件拷贝到卡的根目录，并改名为update.zip
+关闭手机，同时按Home+Power键进入recovery界面(就是小房子+开机键)。
+等出现recovery界面，选择第2项，将sd卡上的update.zip刷入手机。
+注意刷完后，一定要重启一次手机。
+刷这个很简单，一会就完成了。感觉不错。呵呵
+关于Rom的选择，我再论坛上找了很久，也发帖求助了很多高手。大家普遍认为安卓1.2就是稳定，但是速度很慢。
+大家推荐我的主要是Flzyup的Rom和modaco的Rom
+我怕Modaco的Rom中文支持不友好，就决定从Flzyup制作的Rom选择了。目前来说G3的Rom有基于android 1.5的，也有基于2.0
+但是普遍认为2.0 Rom目前不成熟，毕竟官方没有出来呢。所以我就只选择基于android 1.5的Rom了。
+F大（flzyup的亲切称呼）的Rom基于1.5系统的主要如下
+ FLZYUP Custom ROM v1.5 final(惊喜一)
+ FLZYUP Custom ROM v1.4 (Paid APPs+New ICONs)
+ FLZYUP_Custom_ROM_v1.3_final大内存版本
+ FLZYUP Custom ROM v1.3 final all fixed [特效包已发布]
+  1.4版本是基于1.3的基础上优化完善的，1.5是基于全新内核制作的。
+因为我看论坛上很多人反映F大1.5版本耗电，本来G3也就坚持2天，如果刚买手机经常玩，1天就够呛了。。。所以没敢使用这个费电的新版本。我保守的选择了1.4版本。
+准备刷机
+论坛坚持了2天，大家一直讨论刷那个版本好，可以参考http://www.androidin.net/bbs/thread-51055-1-1.html
+最终决定刷F大的1.4版本。看到F大1.4是自动支持app2sd技术的，但是前提是你的卡必须有ext分区。我的8G卡目前就1个Fat32分区，于是考虑先分区。
+但是Win7没有找到合适的分区软件，后来发现xda论坛发布的RA-hero-v1.5.2 recovery可以支持在手机的recovery模式给卡分区。我就先刷了这个recovery
+刷recovery
+主要参考http://forum.xda-developers.com/showthread.php?t=561124
+There are several ways to install a custom recovery, choose the one that suits you most (I probably forgot a few).</description>
+    </item>
+    
+    <item>
+      <title>诺基亚E63刷机</title>
+      <link>http://xinlogs.com/post/2010-01-28-e63-nokia-fireware-update/</link>
+      <pubDate>Thu, 28 Jan 2010 22:25:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-28-e63-nokia-fireware-update/</guid>
+      <description>前几天老婆的E63手机总是死机，一直在跟我抱怨。。。本来想给她买个iphone，结果老婆说不喜欢，还是喜欢她红色的E63.
+我想想手机买了1年多了，也没有更新过，不如刷个新系统看看吧。于是就开始搜索资料、准备软件。
+具体刷机步骤参考 http://nokia.zol.com.cn/188/297_1876549.html
+诺基亚刷机方法
+主要是官方刷新，还是用第三方软件刷新
+官方的在线刷新就是用官方公布的软件直接更新手机的系统。但是官方更新只限于行货手机，因为官方是根据你手机的CODE号码来为你更新手机系统的，如果你手机的CODE是外国的，那刷新后，就没有中文系统了。所以这个不适合大多数水货手机
+我查看了一下，老婆手机的CODE是0569944: 马来西亚的。用官方的估计不行，于是就开始考虑第三方软件。
+发现比较著名的就是凤凰刷机工具了。
+其实简单的说“凤凰刷机”就是刷机软件的一种，而非官方的刷机软件而已，由于其在性能上有官方刷机软件很多不能完成的任务，因而收到的机友的广泛追捧。
+准备工作
+首先是下载凤凰刷机软件
+参考这里http://nokia.zol.com.cn/1/18_299.html
+我下载的就是凤凰刷机2009.34.7.40015最新XX版09.10.30发布
+下载好凤凰刷机软件后，就是备份手机存储卡上的内容和联系人了。我是直接用读卡器把存储卡拷贝到电脑，然后用诺基亚PC套件导出的联系人。
+这些都弄好了，就可以进入刷机步骤了。
+刷机步骤
+安装好凤凰刷机软件，并打开
+选择Tools-&amp;gt;Image file download
+然后在Product code内输入你想刷的系统的code码，我这里输入的0569941，新加坡的版本
+输入完成后，点download等待下载，大小在60-80M。
+下载完成后，点cancel就可以了。
+系统下载好了，我们就该向手机内刷了。用USB的数据线连接手机。在手机上选择PC套件模式。
+然后选择凤凰2009的菜单file&amp;mdash;manage connection，跳出菜单NO CONECTION，再点“NEW”按键。
+按NEW键之后会出现下图：
+选择USB后，按下一步，直到完成。这样连接里会才会出现USB和NO CONNECTIONS两个选择，一个是USB连接，一个是没有连接，如果是USB连接，表示手机正常。选择USB，点击“APPLY”按钮,然后点击Cancel，连接完成
+菜单File ,open Product，系统会自动调出诺基亚各个型号的RM菜单，你选择自己的机型即可，比如诺基亚E63为RM-437，找到后点OK。
+选择RM-437的画面，在出现的提示框里找RM-437，选中，然后点OK，选择normal.
+凤凰2009软件菜单Flashing&amp;mdash;&amp;ndash;Fireware Update,出现下面画面
+这里有一个非常关键的地方需要注意,就是上图选择RM-437之后,要注意看Product CODE:显示的CODE是多少,如果是欧版的CODE(比如0582481),那就需要你选择以下亚太的CODE的系统,选择你刚才下载的比如0569941的系统. 点击下图右边的小方块(小方块上有省略号的那个)
+想刷400.21.013的朋友，如果下载了400的固件，但是在这里没有找到400的话，可以来这里看下
+凤凰菜单栏进入：TOOLS-Options-product locetion（下图）
+红色线标注的栏目原来是空白的，这里需要设置下路径，点右边的“add”添加路径如图所示，然后点“apply”确认后退出。
+哈哈，看下图出现了400.21.013了
+点击&amp;rdquo;Refurbish&amp;rdquo;开始刷机，在进入这个程序之后，无论计算机屏幕右下角出现什么提示，均不要搭理它，直到提示成功。
+到这里就算完成了。哈哈
+以上内容基本都是从下面两篇帖子上转过来的。如果有什么不明白，可以直接去看原帖。我只是记录下，省的以后刷机还要找资料。
+ [原创][教程]诺基亚E63用凤凰2009成功刷机 0300 凤凰2009成功刷 E63最新固件 400.21.013   </description>
+    </item>
+    
+    <item>
+      <title>postfix&#43;extmail的附件大小显示和限制问题解决办法</title>
+      <link>http://xinlogs.com/post/2010-01-24-postfix-extmail-attachment-bug/</link>
+      <pubDate>Sun, 24 Jan 2010 21:06:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-24-postfix-extmail-attachment-bug/</guid>
+      <description>最近在给一个公司部署了postfix+extmail的邮件系统后，遇到了附件大小限制问题。
+extmail默认设置是5M，但是由于extmail的统计大小方法问题，一般附件限制比设置的小了1/3。也就是你设置了5M，也就能到3M多。
+这里先说下大小限制的配置。
+一、修改extmail的webmail.cf文件
+SYS_MESSAGE_SIZE_LIMIT = 5242880 注意：以位为单位为5M字节。 SYS_MESSAGE_SIZE_LIMIT = xxx  二、修改/etc/postfix/main.cf文件，
+message_size_limit = xxx  三、重启postfix即可，service postfix restrart 和重启apache，service httpd restart
+如何解决附件限制大小和系统文件大小相差1/3呢？
+首先是修改/var/www/extsuite/extmail/libs/Ext/App目录下的Compose.pm文件
+sub is_oversize { my $self = shift; my $sys = $self-&amp;gt;{sysconfig}; my $maxsize = $sys-&amp;gt;{SYS_MESSAGE_SIZE_LIMIT}; my $tsize = shift; return 0 unless defined $maxsize and $maxsize &amp;gt; 0; return 0 unless defined $tsize and $tsize &amp;gt; 0; if ($tsize &amp;gt;= $maxsize) { return $maxsize; } 0; }  注意到上面的if ($tsize &amp;gt;= $maxsize)了吧，修改为if ($tsize &amp;gt;= 1.</description>
+    </item>
+    
+    <item>
+      <title>extman后台登陆问题解决方法</title>
+      <link>http://xinlogs.com/post/2010-01-19-extman/</link>
+      <pubDate>Tue, 19 Jan 2010 19:08:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-19-extman/</guid>
+      <description>前一阵子给一个公司架设了postfix+mysql+extmail的邮件系统。
+用了一段时间后，发现后台管理的extman不能登录了，提示如下
+Can&#39;t open /tmp/extman//sid_26da75f9aec35f2cbc6b4fa425ab525e, No such file or directory  后来发现是/tmp目录下的extman目录被系统清除了。。
+然后再网络上找了一些解决办法，说是Linux系统在启动的时候，会清理/tmp目录。建议将这个目录设置在/var/tmp目录下。
+结果用了一段时间后，发现一样是被清理。。。。
+我的系统是CentOS 5.3 64bit
+最后我通过修改，/var/www/extsuite/extman/webmail.cf文件里面的配置
+#sys_sess_dir, the session dir SYS_SESS_DIR = /tmp/extman/  将SYS_SESS_DIR指定到了/data/extman下面了。估计这次系统不会清除这个目录了吧
+还有一种常见错误就是提示
+Can&#39;t open /tmp/extman//sid_89b33ec5ce0b5903f24035aa4ad76d15, Permission denied  这个是因为extman 那个临时目录的权限不对。
+可以设置为777就ok了</description>
+    </item>
+    
+    <item>
+      <title>win7下启动telnet--转载</title>
+      <link>http://xinlogs.com/post/2010-01-12-open-telnet-win7/</link>
+      <pubDate>Tue, 12 Jan 2010 14:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-12-open-telnet-win7/</guid>
+      <description>因为我日常需要用到telnet来管理交换机，所以经常用到telnet。
+升级到win7后，发现telnet不能用了，提示如下
+后来查找资料发现
+Windows 7出于安全性考虑屏蔽了Telnet。
+如何开启呢？
+在开始菜单-》控制面板-》程序界面中，点“打开或关闭Windows功能”如下图
+然后在弹出的&amp;rdquo;Windows功能&amp;rdquo;界面中，选择上Telnet客户端，点击确定按钮。如下图
+通过上面这些设置，就打开了Windows默认屏蔽的Telnet功能了。</description>
+    </item>
+    
+    <item>
+      <title>windows 7平台下按键精灵的后台运行</title>
+      <link>http://xinlogs.com/post/2010-01-07-quickmacro-on-win7/</link>
+      <pubDate>Thu, 07 Jan 2010 18:54:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-07-quickmacro-on-win7/</guid>
+      <description>上次写了一篇野D带黑上，后台挂机按键精灵代码，有人反映win7下按键精灵后台代码不能运行。
+这里单独说明下。首先的我win7系统是32为的windows7 旗舰版，按键精灵版本是7.20.5292 免费版。在刚一开按键精灵的时候，会提示Init Seg Error。
+这个不用管，直接点确定就可以。然后打开按键精灵后，我们点“设置”按钮
+然后在弹出来的设置界面中，将热键模式选择为增强模式，如下图所示。
+点确定后，返回按键精灵主界面。
+创建带黑上脚本点击新建按钮，进入“按键精灵-我的脚本”界面。然后点击这个界面中的“源文件”标签，如下图所示（注意红色三角标记）
+然后将带黑上脚本的代码粘贴进来。并在右侧“描述”里，写上黑上后台。点击保存退出，如下图所示
+到这里按键精灵设置完毕。只要打开刷黑上的小德号窗口，按F10启动脚本就可以了。然后再切换窗口双开，上网都可以。这个脚本会一直往小德号的窗口发送指令的。</description>
+    </item>
+    
+    <item>
+      <title>野D带黑上，后台挂机按键精灵代码</title>
+      <link>http://xinlogs.com/post/2010-01-03-druid-ubrs-quickmacro-code/</link>
+      <pubDate>Sun, 03 Jan 2010 19:34:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-03-druid-ubrs-quickmacro-code/</guid>
+      <description>代码是运行在按键精灵里的。在winxp+按键精灵7和win7+按键精灵7下测试通过
+Plugin hwnd=Window.GetKeyFocusWnd() Rem start For 30 Plugin Bkgnd.KeyPress(hwnd,70) Delay 300 EndFor Delay 1000 Plugin Bkgnd.KeyDown(hwnd,16) Plugin Bkgnd.KeyPress(hwnd,87) Plugin Bkgnd.KeyUp(hwnd,16) Delay 500 For 30 Plugin Bkgnd.KeyPress(hwnd,70) Delay 300 EndFor Delay 1000 Plugin Bkgnd.KeyDown(hwnd,18) Plugin Bkgnd.KeyPress(hwnd,68) Plugin Bkgnd.KeyUp(hwnd,18) Delay 500 For 30 Plugin Bkgnd.KeyPress(hwnd,70) Delay 300 EndFor Delay 1000 For 8 Plugin Bkgnd.KeyDown(hwnd,16) Plugin Bkgnd.KeyPress(hwnd,82) Plugin Bkgnd.KeyUp(hwnd,16) EndFor Delay 500 Goto start  代码说明：
+上面是我自己使用的代码，我的快捷键设置和大家不一样，所以别人使用，请注意修改快捷键。
+精灵之火（野性） Shift+R
+树皮 Shift+W
+狂暴回复 Alt+D</description>
+    </item>
+    
+    <item>
+      <title>2010年北京第一场雪</title>
+      <link>http://xinlogs.com/post/2010-01-03-2010-snow-first/</link>
+      <pubDate>Sun, 03 Jan 2010 09:20:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-03-2010-snow-first/</guid>
+      <description>2010年1月2日凌晨，北京开始飘落第一场雪。雪花很小。。。只有薄薄一层。。。。到了2日晚上雪花开始变大。。。 现在3日早上。。。大大的雪花，厚厚一层雪。。。 下午打算带老婆孩子玩学去了。</description>
+    </item>
+    
+    <item>
+      <title>drupal在nginx 0.8.15下的简洁URL配置</title>
+      <link>http://xinlogs.com/post/2010-01-01-druapl-url-nginx-rewrite/</link>
+      <pubDate>Fri, 01 Jan 2010 18:06:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2010-01-01-druapl-url-nginx-rewrite/</guid>
+      <description>最近在学习drupal，发现这个程序比xoops、joomla都灵活，对应的学习曲线也高。反正安装后，根本不知道真没设置。呵呵
+下面先在nginx上配置了rewrite规则，让drupal支持简洁的URL
+server { listen 80; server_name drupal.xinlogs.com; index index.html index.htm index.php; root /data0/htdocs/drupal; #limit_conn crawler 20; location = / { index index.php; } location / { index index.php index.html; if (!-f $request_filename) { rewrite ^(.*)$ /index.php?q=$1 last; break; } if (!-d $request_filename) { rewrite ^(.*)$ /index.php?q=$1 last; break; } } location ~ .*.(php|php5)?$ { fastcgi_pass unix:/tmp/php-cgi.sock; #fastcgi_pass 127.0.0.1:9000; fastcgi_index index.php; include fcgi.conf; } location ~ .*.(gif|jpg|jpeg|png|bmp|swf)$ { expires 30d; } location ~ .</description>
+    </item>
+    
+    <item>
+      <title>bo-blog 2.1.1如何加入google广告条</title>
+      <link>http://xinlogs.com/post/2009-12-31-bo-blog-insert-googleadsense/</link>
+      <pubDate>Thu, 31 Dec 2009 16:29:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-31-bo-blog-insert-googleadsense/</guid>
+      <description>刚开始使用的bo-blog的时候也不知道如何加入google广告条，经过这几天的咕哝，现在已经成功在右边和下面加入。方法记录如下
+右侧边栏加入google广告
+进入后台管理-&amp;gt;常规管理-&amp;gt;模块配置
+点击左侧的新建/编辑项目 如图
+然后在手动添加项目中选择侧边模块，确定。如图
+确认后，进入到新增/编辑项目页面
+项目名称&amp;ndash;这个是在后台编辑的时候，给自己分辨模块用的，随意命名。我的叫做googleadsense，注意：只能字母和数字
+项目描述&amp;ndash;随意填写
+抬头文字&amp;ndash;显示在首页侧边栏上，我的叫做广告栏，根据个人情况写
+栏目内容&amp;ndash;这里写入google的广告代码就可以了
+这个办法最容易，不用修改模板。如果加入后，首页显示google广告栏，里面内容是白的，不要着急，过段时间就可以显示了。我第一个广告大约在30分钟后，才正确显示出来。
+博客底部加入google广告
+底部加入广告，也可以用上面类似的办法，通过加入底部模块实现。但是我尝试了，不好对齐，而且有的模板会破坏底部风格。所以我没有用添加底部模块的办法。
+我采用直接修改模板的elements.php文件方法。
+到bo-blog的template目录下，找到自己使用的模板文件夹，我用的neowin2，所以对应目录就是neowin2
+在模板目录下，打开elements.php文件。找到文件里的displayfooter位置，在displayfooter段里面加入google广告代码。入下所示
+$elements[&#39;displayfooter&#39;]=&amp;lt;&amp;lt;&amp;lt;eot &amp;lt;div class=&amp;quot;clear&amp;quot;&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;content-box-b&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;content-box-b-r&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;content-box-b-l&amp;quot;&amp;gt;&amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; /* 下面为google广告代码 */ &amp;lt;center&amp;gt; &amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;&amp;lt;!-- google_ad_client = &amp;quot;pub-2759888315234430&amp;quot;; /* 728x90, ... 09-12-21 */ google_ad_slot = &amp;quot;9531615827&amp;quot;; google_ad_width = 728; google_ad_height = 90; //--&amp;gt; &amp;lt;/script&amp;gt; &amp;lt;script type=&amp;quot;text/javascript&amp;quot; src=&amp;quot;http://pagead2.googlesyndication.com/pagead/show_ads.js&amp;quot;&amp;gt; &amp;lt;/script&amp;gt; &amp;lt;/center&amp;gt; /*google广告代码结束*/ &amp;lt;div id=&amp;quot;footer&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;footer-r&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;footer-l&amp;quot;&amp;gt; &amp;lt;div id=&amp;quot;footer-misc&amp;quot;&amp;gt; Skin By &amp;lt;a href=&amp;quot;http://www.</description>
+    </item>
+    
+    <item>
+      <title>apache下多虚拟主机的配置与管理</title>
+      <link>http://xinlogs.com/post/2009-12-30-apache-virtualhost-configure/</link>
+      <pubDate>Wed, 30 Dec 2009 16:08:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-30-apache-virtualhost-configure/</guid>
+      <description>当一台服务器想给多个域名提供web服务的时候，我们可以使用apache虚拟主机配置。
+apache的配置文件在centos系统下，默认放在/etc/httpd/conf目录下的httpd.conf文件里。
+虚拟主机的配置如下
+#############TEST VirtualHost &amp;lt;VirtualHost *:80&amp;gt; ServerAdmin babodx@gmail.com DocumentRoot &amp;quot;/home/babo&amp;quot; ServerName www.xinlogs.com DirectoryIndex index.html ErrorLog logs/www.xinlogs.com_error_log CustomLog logs/www.xinlogs.com-access_log common &amp;lt;/VirtualHost&amp;gt;  如果我们apache给10个或更多的域名提供web服务，这样的话，我们的httpd.conf就会有很多这样的配置段落，看起来很长，管理起来也很麻烦。而且一个apache同时给几十个web域名提供虚拟主机，完全没有问题。那该如何写配置文件便于我们管理呢？
+##解决办法##
+为了管理方便，配置文件的结构清晰。
+我们完全可以将每个虚拟主机的配置文件放在独立文件中，这样apache的主要配置文件httpd.conf看上去很简洁。
+只要在最后加入
+Include conf/vhost_*.conf   然后再conf目录里，每个虚拟主机的文件只要以vhost_开头，后面可以用自己的域名加.conf后缀。比如有个test.com的域名要做web。
+我们就可以直接在conf目录创建一个vhost_test.com.conf文件，文件里写入虚拟主机配置，比如
+#############TEST VirtualHost &amp;lt;VirtualHost *:80&amp;gt; ServerAdmin babodx@gmail.com DocumentRoot &amp;quot;/home/test.com&amp;quot; ServerName test.com DirectoryIndex index.html ErrorLog logs/test.com_error_log CustomLog logs/test.com-access_log common &amp;lt;/VirtualHost&amp;gt;  通过这种配置结构，我们管理再多的虚拟主机也不用怕。只要修改conf目录下对应虚拟主机的配置文件即可。</description>
+    </item>
+    
+    <item>
+      <title>playframework--Installation guide 安装手册【翻译】</title>
+      <link>http://xinlogs.com/post/2009-12-30-playframework-installation-guide/</link>
+      <pubDate>Wed, 30 Dec 2009 14:46:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-30-playframework-installation-guide/</guid>
+      <description>Installation guide 安装手册 Prerequisites 前提条件 To run the play framework, you need Java 5 or later. If you wish to build play from source, you will need the Bazaar source control client to fetch the source code and Ant to build it. 要运行Play框架，你需要Java 5以后的的JDK。如果你想从源码构建play框架，你需要用Bazaar源码控制的客户端去获取源代码并用Ant创建它。 If you are using MacOS, java is just built-in. If you are using linux, make sure to use either the Sun-JDK or OpenJDK (and not gcj which is the default java command on many linux distro).</description>
+    </item>
+    
+    <item>
+      <title>解决Linux下Tomcat不能重启和停止问题</title>
+      <link>http://xinlogs.com/post/2009-12-28-tomcat-reboot-problems/</link>
+      <pubDate>Mon, 28 Dec 2009 15:33:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-28-tomcat-reboot-problems/</guid>
+      <description>我的Tomcat 5.5.28安装在CentOS 5.3 64bit系统上
+每次重启都停住，只要要等5-10分钟才可以。
+系统reboot或者shutdown也都卡在关闭tomcat的过程中
+后来发现直接用/usr/local/tomcat/bin/shutdown.sh一样存在问题，但是如果Tomcat什么项目都不加载，却正常。
+我怀疑是tomcat加载的lib或者jar文件一多，重启和关闭就会慢的巨慢。。。甚至10分钟以上。
+为了解决这个问题，我修改了/etc/init.d/目录下的tomcat文件，让关闭或者重启的时候，直接通过kill命令杀掉tomcat进程。
+下面是我/etc/init.d/tomcat文件
+#!/bin/bash # # Startup script for the tomcat # # chkconfig: 345 80 15 # description: Tomcat is a Servlet+JSP Engine. # Source function library. . /etc/rc.d/init.d/functions export JAVA_HOME=/usr/local/jdk1.6.0_16 export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin export CATALINA_BASE=/usr/local/tomcat export CATALINA_HOME=/usr/local/tomcat export CATALINA_TMPDIR=/usr/local/tomcat/temp export JRE_HOME=/usr/local/jdk1.6.0_16 start(){ if [ -z $(/sbin/pidof java) ]; then echo &amp;quot;Starting tomcat&amp;quot; /usr/local/tomcat/bin/startup.sh touch /var/lock/subsys/tomcat else echo &amp;quot;tomcat allready running&amp;quot; fi } stop(){ if [ !</description>
+    </item>
+    
+    <item>
+      <title>playframework--开发视频</title>
+      <link>http://xinlogs.com/post/2009-12-27-playframework-video/</link>
+      <pubDate>Sun, 27 Dec 2009 18:32:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-27-playframework-video/</guid>
+      <description>http://www.playframework.org/
+网站上本来首页有一段大约10分钟的视频。内容是10分钟开发一个web程序，包括数据库的curd操作。
+但是由于视频是放在了http://vimeo.com/国内正常情况下访问不到。
+我在浏览首页的时候，发现可以通过http://www.playframework.org/下载mp4的视频观看。
+&amp;lt;下面给出下载地址，感兴趣的朋友可以下载观看http://download.playframework.org/presentations/screencast.mp4</description>
+    </item>
+    
+    <item>
+      <title>playframework--play！java on rails框架</title>
+      <link>http://xinlogs.com/post/2009-12-26-playframework/</link>
+      <pubDate>Sat, 26 Dec 2009 18:41:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-26-playframework/</guid>
+      <description>今天看程序员，发现了play！framework这个java web框架。
+以前也接触过SSH框架，struts+spring+hibernate。。。看着每一个部分那厚厚的参考书。。我就害怕。
+后来就看了一阵子ruby on rails。彻底喜欢上了那种简洁的风格，约定优先配置也很棒。
+直到发现play框架，才知道原来java也可以这样简洁。play框架扔掉了J2EE的各种规范。。。完全像rails一样简洁了
+**Play！的主要特性： ** * 简单的开发周期。该框架可自动编译和重新装载已改变的源文件。 * 智能绑定HTTP参数到Java方法参数。 * 基于Apache Mina的快速HTTP服务器http://mina.apache.org/ * 一个基于Groovy的强大的模板引擎，可实现多层继承，定制用户标签等功能。 * 优秀的错误报告功能：发生异常时，该框架会直接显示出错误的源代码，甚至是模板代码。
+目前playframework网站的资料也比较全。从安装入门到开发实例应有尽有。我打算有时间慢慢翻译过来，发布在我的博客上。也是对自己学习的一种激励。
+官方网站
+http://www.playframework.org/
+各种实例
+Yet Another Blog EngineThe final application from the play guide tutorial.ForumA simple forum application using JPA.JobboardA full faetured job board application that uses the CRUD module to automatically generate the administration area. ChatAn HTTP based chat application. We use the asynchronous request model to be able to handle a lot of simultaneous connected users without resources waste.</description>
+    </item>
+    
+    <item>
+      <title>nginx采用epoll的事件模型，为何效率高。</title>
+      <link>http://xinlogs.com/post/2009-12-24-nginx-epool-events/</link>
+      <pubDate>Thu, 24 Dec 2009 16:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-24-nginx-epool-events/</guid>
+      <description>以前就知道在linux下nginx采用epoll事件模型，处理效率高。但是一直不知道具体为什么，今天查看了下文档，了解了原因。
+首先nginx支持一下这些事件模型（才考nginx的wiki）
+Nginx支持如下处理连接的方法（I/O复用方法），这些方法可以通过use指令指定。
+ select - 标准方法。 如果当前平台没有更有效的方法，它是编译时默认的方法。你可以使用配置参数 &amp;ndash;with-select_module 和 &amp;ndash;without-select_module 来启用或禁用这个模块。 poll - 标准方法。 如果当前平台没有更有效的方法，它是编译时默认的方法。你可以使用配置参数 &amp;ndash;with-poll_module 和 &amp;ndash;without-poll_module 来启用或禁用这个模块。 kqueue - 高效的方法，使用于 FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0 和 MacOS X. 使用双处理器的MacOS X系统使用kqueue可能会造成内核崩溃。 epoll - 高效的方法，使用于Linux内核2.6版本及以后的系统。在某些发行版本中，如SuSE 8.2, 有让2.4版本的内核支持epoll的补丁。 rtsig - 可执行的实时信号，使用于Linux内核版本2.2.19以后的系统。默认情况下整个系统中不能出现大于1024个POSIX实时(排队)信号。这种情况对于高负载的服务器来说是低效的；所以有必要通过调节内核参数 /proc/sys/kernel/rtsig-max 来增加队列的大小。可是从Linux内核版本2.6.6-mm2开始， 这个参数就不再使用了，并且对于每个进程有一个独立的信号队列，这个队列的大小可以用 RLIMIT_SIGPENDING 参数调节。当这个队列过于拥塞，nginx就放弃它并且开始使用 poll 方法来处理连接直到恢复正常。 /dev/poll - 高效的方法，使用于 Solaris 7 11&amp;frasl;99+, HP/UX 11.22+ (eventport), IRIX 6.5.15+ 和 Tru64 UNIX 5.1A+. eventport - 高效的方法，使用于 Solaris 10. 为了防止出现内核崩溃的问题， 有必要安装 这个 安全补丁。  在linux下面，只有epoll是高效的方法。</description>
+    </item>
+    
+    <item>
+      <title>国服3.13 德鲁伊带小号快速升级（1-70全程带）</title>
+      <link>http://xinlogs.com/post/2009-12-22-wow-1-70-express-upgrade/</link>
+      <pubDate>Tue, 22 Dec 2009 19:24:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-22-wow-1-70-express-upgrade/</guid>
+      <description>魔兽世界已经快开85了，而国内还坚持在70级。没有玩的乐趣了，就研究研究带小号速度升级吧。
+带小号的职业选择
+一般带小号的职业，需要可以AOE，有强力的dps，最好自己还可以扛打。所以就是法师、术士、骑士、德鲁伊这几个职业里选择。FS是AOE的王者，原来一直也是带小号的首选。
+目前来看也不错。但是破碎现在的效率不如以前了，STSM法师带着对操作要求太高，容易累。SS可以AOE，但是没有FS的控制技能，怪多了，扛不住。QS对于小副本，AOE来说很强力，尤其是学生和STSM，效率很高。但是对于ZUL这样的本，因为QS的短腿，不推荐。
+德鲁伊如果装备合适，目前我认为才是带小号的最佳人选。
+从1-70，全部有适合的副本和技巧让小德来带小号升级。下面说说我的经验因为德鲁伊是T里面dps最高的，FS AOE靠dps，但是没有我们能抗，还要喝水。QS AOE靠反弹，没有我们能打。而且小德的移动速度快，就意味着拉同样路线的怪，我们时间少，效率高。所以对于血色、ZUL这些副本，小德效率最高。STSM不适合小德，不是不能刷，是麻烦，我们不会解疾病。所以我带小号的路线是
+ 1-10级，小德辅助小号独立升级。
+ 10-20带影牙，
+ 20-35血色，
+ 35-45祖尔法拉克，
+ 45-65黑石塔上，
+ 65-70监狱。
+  1-10级 快速升级经验
+1-10级其实有个很好的办法升级，只是大家很少注意到。首先是70级的小德，不要和小号组队，然后洗平衡天赋最好，治疗天赋也凑合。穿上最高的法伤装备，然后给小号上荆棘术。小号带着这个10分钟的荆棘术buff，去打怪，基本弹怪1次-3次伤害，怪就死了。完全可以自己AOE了，什么技能也不用，就跑过去普通攻击一下怪，然后继续开一下个怪，怪打你1-3下，自己就死了。这样1-10级，比去任何地方都快。
+注意 必须自己先打怪1下，如果是怪先打你被经技术弹死了，就没有经验了。
+10-20级 快速升级经验
+10-20级，就要去影牙副本了。大号先进入副本，因为小号级别低的时候，一进入就引怪。小号就放在副本门口就可以，大号进入副本aoe。注意最后的boss一定要拉出来杀，不然小号分不到经验。影牙副本是一个塔的建筑结构，所以小号放在副本，大号在小地图观察，只要可以看到小号的位置，就可以杀一次怪，我一般是分3次杀。第一次拉广场上的，第2次拉到狼boss那里，就是杀了boss出先4个蓝胖子的地方。第3次拉到最后boss门前面。
+20-35级 快速升级经验
+20-35级是快速升级的开始，小德因为移动速度和dps的优势，可以在这里3门同时刷。刷2门，肯定爆本。先刷教堂，然后出本刷军械库，最后刷次图书馆。图书馆经验不多，就是为了不爆本，凑点时间。小号愿意，也可以放弃图书馆，让他们捡些布呀什么的。这里建议小德穿最强的DPS装备，如果网络好，不怕掉线，可以拿 烈焰之怒 武器。（俗名：掉线之怒）。武器FM推荐 作战专家
+35-45 快速升级经验
+35-45 选择祖尔法拉克最好，小德可以一波流全部拉完。一次的经验在2.8w-3.5w。这里需要一些装备和技巧。首先最好有4件军装，这样移动速度提高15%。我尝试过，4件军装，比你骑60%速度的马还快。网上有zul的一波流视频，是个骑马拉全副本的，我觉得不现实，至少我经常拉几波，就给打下马了。所以我推荐直接穿4件军装，旅行形态拉。再有一点就是要带上部落徽记，因为有个蜥蜴怪，可以给你一个晕的状态，让你没有任何躲闪而且不能攻击。这样基本一次就快死了。所以一定要及时用徽章解这个状态。只要保持攻击，就可以满血。我一般带英雄卡片和部落徽记。
+45-65 快速升级经验
+45-65 这里只有小德带最效率，就是去黑上升级。卡召唤师。一般卡2个召唤师，速度相当与STSM。一般卡7个召唤师的小德，带45级的小号，1个小时3级半。这里一定要舍得吃药和加buff。具体如何卡黑上，我以后会写文章介绍。目前我可以卡5-7个，成功率85%吧
+65-70 快速升级经验
+65-70就找术士拉小号去监狱，然后小德带监狱，65-70大约200分钟吧。要求小德穿DPS装备和少量回血装备。</description>
+    </item>
+    
+    <item>
+      <title>5v5打到1600&#43;了，庆祝一下！</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-5v5/</link>
+      <pubDate>Mon, 21 Dec 2009 22:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-5v5/</guid>
+      <description>今天5v5我们上1600了。庆祝下。</description>
+    </item>
+    
+    <item>
+      <title>TBC 2.3如何挂战场</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-robot-battlegroud/</link>
+      <pubDate>Mon, 21 Dec 2009 19:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-robot-battlegroud/</guid>
+      <description>目前TBC 2.3了，荣誉又开始有用处了，可以购买S1装备。但是如何挂战场呢？毕竟不是每个人都能不上班，每天玩10个小时。。。我目前的办法是使用国外开发的一款练级外挂glider，再配合一个自己些的程序和修改过的一个插件来实现的。glider可以控制人物按照设定的线路跑动和打怪。我用c#些一个程序，来监控着角色，如果死亡了，就停止wowglider，等待复活。如果复活了，就开glider。战斗结束了，就点npc排队。然后用我写的插件回答GM问题。。。。总之还算可以吧。用了大约1-2个晚上也业余时间解决的。c#确实使用起来很简单，至少之前我没有用过c#。但写个简单的网络程序，负责控制其它程序，实现起来很容易。基本都是采用TcpClient类，就可以了www.pvpbot.com也是个选择，但是收费比较贵。其实可以考虑用c#写个简单的web服务器，通过dns欺骗，来对pvpbot的bgtool做本地验证。关于pvpbot的验证，确实不怎么好。至少我用了不到1个小时抓包，分析和测试。已经可以本地验证了，不过懒得写个简单web服务器实现验证了。（以前没有写过，还要查资料。。）关于网络验证，glider做的就比较好。我觉得至少要对时间和硬件编号和用户名同时加密发送到服务器。然后再服务器验证后，对那个时间和是否验证通过等信息再加密，大乱顺序后发送回来。这样就算抓包，因为每次发送的时间不同，每次抓到的信息也不同。如果不知道算法，很难实现本地验证。不过c#的代码保护太差，反编译后和看源代码差不多。。。。。。这个很难解决。。</description>
+    </item>
+    
+    <item>
+      <title>魔兽世界内存分析，基于wow 2.4.2</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-memory-tools/</link>
+      <pubDate>Mon, 21 Dec 2009 19:03:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-memory-tools/</guid>
+      <description>今天基于wow 2.4.2分析了下魔兽世界的内存，并做了如下软件。
+全部采用C#编写，实现如下功能加速3.5%.&amp;ndash;（这个服务器有限制，超过4%就掉线）。这个加速是修改人物速度出来的，和那些变速齿轮不一样。这样修改后，别人看你的速度也是正常的，就好像你穿了加速的鞋子一样。无阻力爬山&amp;ndash;只要不是90度的山，多陡都能爬上去。超级跳&amp;ndash;可以让跳跃的高度自己设置Z+&amp;ndash;直接传送到任意高度目前就分析出来了这些，其实这些小功能只能自己在副本娱乐下。估计出了副本。。大街上没有人敢用。呵呵主要锻炼下自己对C#实现内存读写，还有就是分析内存的基地址和最终目的地址。</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.3 64bit安装在HP 380G5服务器</title>
+      <link>http://xinlogs.com/post/2009-12-21-centos-5-3-64bit-install-on-hp-380-g5/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-centos-5-3-64bit-install-on-hp-380-g5/</guid>
+      <description>今天安装了一台CentOS 5.3 64bit服务器。
+服务器硬件HP 380G5，4U高
+ CPU 4核处理器 2颗 内存 4G 硬盘 147G*3  安装很顺利，采用server模式，去掉了不用的软件，加入虚拟化。
+安装后启动，占用内存在230M左右，感觉比CentOS 4.7高了很多呀。。。我在一台HP 140的1U服务器安装的CentOS 4.7 启动后，只占用29M内存。
+内存占用问题，还需要看看具体是什么原因。
+测试下性能，我比较喜欢用unixbench测试。
+http://www.hermit.org/Linux/Benchmarking/
+我这次下载的5.0版本，因为5.1以后支持2D,3D我没有装X11，运行不了。
+结果5.0也是运行了一半就出问题了。奇怪呀。
+我的一台CentOS 4.4 装在一个双核 Intel&amp;reg; Xeon&amp;trade; CPU 2.66GHz，1G内存的机器上。用4.1.0-wht测试，得分只有145.不过是跑着java、tomcat、apache、mysql和vmserver的时候测试的。内存使用400M左右的时候。
+我看到网上很多128M的VPS居然也可以得到160多分，真是奇怪呀。而我这台双4核处理器xeon e7320,4G内存，装CentOS的机器，也只有下面的数据
+[root@moodle unixbench-4.1.0-wht-2]# ./Run make all make[1]: Entering directory `/root/unixbench-4.1.0-wht-2&#39; Checking distribution of files ./pgms exists ./src exists ./testdir exists ./tmp exists ./results exists make[1]: Leaving directory `/root/unixbench-4.1.0-wht-2&#39; # # # # # # # ##### ###### # # #### # #&amp;lt;br&amp;gt; # # ## # # # # # # # ## # # # # #&amp;lt;br&amp;gt; # # # # # # ## ##### ##### # # # # ######&amp;lt;br&amp;gt; # # # # # # ## # # # # # # # # #&amp;lt;br&amp;gt; # # # ## # # # # # # # ## # # # #&amp;lt;br&amp;gt; #### # # # # # ##### ###### # # #### # # 4 1 Based on the Byte Magazine Unix Benchmark 44 11 v v 4 4 1 v v 44444 1 v4.</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.3 安装虚拟化后的内存识别问题.</title>
+      <link>http://xinlogs.com/post/2009-12-21-centos-xen-memory-problem/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-centos-xen-memory-problem/</guid>
+      <description>昨天单位到了2台SUN x4450.
+硬件配置相当强力.
+CPU 4颗6核的 Intel&amp;reg; Xeon&amp;reg; CPU X7460 @ 2.66GHz
+系统可以识别出24颗处理器
+[root@localhost ~]# cat /proc/cpuinfo |grep processor|wc -l 24  内存64G
+在内存问题上,我郁闷了一阵子.我用dmesg、free、top查看，都是32G
+开始以为CentOS 5.3的64位内核就能支持到32G呢。又尝试在启动参数里加mem=64G
+又上论坛询问、查看官方文档，都说CentOS 5.3 64bit应该没有内存限制的。
+后来我发现了，原来问题出在安装的虚拟化上面
+用xm top可以正确识别内存。而且安装的系统，只是当作xm 里面的一个dom0来运行的。</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.3下成功安装了Xen虚拟化服务。</title>
+      <link>http://xinlogs.com/post/2009-12-21-centos-install-xen/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-centos-install-xen/</guid>
+      <description>今天参照下面文档成功安装了虚拟化服务。
+http://www.howtoforge.com/paravirtualization-with-xen-on-centos-5.3-x86_64-p2
+并且在虚拟化服务里，安装了一台vm01的虚拟Centos。
+不过时间比较长，通过网络安装，用了4个小时。</description>
+    </item>
+    
+    <item>
+      <title>CentOS 5.3架设VPN和619错误排除</title>
+      <link>http://xinlogs.com/post/2009-12-21-centos-vpn-howto/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-centos-vpn-howto/</guid>
+      <description>我买这个VPS的主机，一个目的是用来做Blog空间，另外一个就是用来跑vpn。
+先按照http://rashost.com/blog/centos5-pptpd-vpn这里的文章安装vpn服务。
+内核支持
+pptpd VPN需要内核支持mppe，我们的VPS自带的内核已经把mppe编译进去了，没有把mppe另外当作内核的模块。
+软件安装
+要安装pptpd VPN，ppp和iptables这两个软件是必须安装的，安装命令：yum install -y ppp iptables
+然后到http://www.poptop.org/下载pptpd的rpm包并安装，下载的时候要注意下面几点：
+ 好像只有1.3.3版本有rpm包，其他版本只有源代码 没有el5或者centos5的rpm包，用rh4的rpm包可以安装在centos 5上 64位的系统要下载64位的rpm包，32位的系统要下载32位的rpm包，别搞错了  64位系统安装命令：rpm -ivh pptpd-1.3.3-1.rhel4.x86_64.rpm 32位系统安装命令：&amp;lt;pre&amp;gt;rpm -ivh pptpd-1.3.3-1.rhel4.i386.rpm
+编辑配置文件 /etc/ppp/options.pptpd
+内容如下：
+name pptpd refuse-pap refuse-chap refuse-mschap require-mschap-v2 require-mppe-128 proxyarp lock nobsdcomp novj novjccomp nologfd ms-dns 208.67.222.222 ms-dns 208.67.220.220  编辑配置文件 /etc/pptpd.conf 内容如下：
+option /etc/ppp/options.pptpd logwtmp localip 192.168.92.1 remoteip 192.168.92.11-15  编辑配置文件 /etc/ppp/chap-secrets,配置用户名为johndoe，密码为password，内容如下：
+johndoe pptpd password *  修改配置文件/etc/sysctl.conf中的相应内容如下：
+net.ipv4.ip_forward = 1  配置iptables:</description>
+    </item>
+    
+    <item>
+      <title>CentOS里的Xen配置pygrub</title>
+      <link>http://xinlogs.com/post/2009-12-21-centos-xen-pygrub/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-centos-xen-pygrub/</guid>
+      <description>如果用virt-install生成一台虚拟服务器 在查看配置的时候，会发现已经没有了kernel=这个配置来制定启动内核。而是用了
+bootloader = &#39;/usr/bin/pygrub&#39;
+关于这个，可以参考 http://wiki.xensource.com/xenwiki/PyGrub
+CentOS 5.3的虚拟化，好像没有了XenU的内核，而是改用了这种新的方式。
+反正我用kernel启动失败了。后来用这个方式已经可以正常使用虚拟服务器了。</description>
+    </item>
+    
+    <item>
+      <title>Mysql设置my.cnf来记录下全部sql请求</title>
+      <link>http://xinlogs.com/post/2009-12-21-mysql-log-sql/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-mysql-log-sql/</guid>
+      <description>要想记录下提交到mysql数据库的全部sql语句，可以通过修改my.cnf来实现
+修改/etc/my.cnf文件
+找到[mysqld]段 加入
+log=queryLog log-slow-queries=showquerylog  然后就可以到/var/lib/mysql/目录下找到queryLog和showquerylog日志文件了
+里面记录这每个提交到数据库执行的sql语句。
+我的系统CentOS 4.4 rpm方式安装的mysql 5.0.57,如果其它系统或者其它安装方式，可能文件路径会有些不同。</description>
+    </item>
+    
+    <item>
+      <title>rails实现图片验证码</title>
+      <link>http://xinlogs.com/post/2009-12-21-rails-graphical-verification-code/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-rails-graphical-verification-code/</guid>
+      <description>写在了babo.javaeye.com了
+http://babo.javaeye.com/blog/72298</description>
+    </item>
+    
+    <item>
+      <title>rails配合fckeditor实现文本编辑工具条</title>
+      <link>http://xinlogs.com/post/2009-12-21-rails-fckeditor/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-rails-fckeditor/</guid>
+      <description>主要参考了
+http://blog.caronsoftware.com/articles/2006/08/07/fckeditor-plugin-for-rails
+http://www.blogjava.net/rocky/archive/2006/11/04/rails-fckeditor-integration.html
+安装
+下载http://rubyforge.org/projects/fckeditorp/项目的 FCKEditor Plugin for Rails，将下载的文件加压缩后，保存到fckeditor文件夹中
+将fckeditor文件夹拷贝到自己项目的vendor/plugins目录下
+运行rack fckeditor:install
+然后在需要用到这个插件的页面，输入&amp;lt;%= javascript_include_tag &amp;quot;fckeditor/fckeditor&amp;quot; %&amp;gt;或者将这句话添加到app/view/layouts/下的对应文件中
+使用
+需要使用这个工具条的地方，输入
+&amp;lt;%=fckeditor_textarea(&amp;quot;post&amp;quot;, &amp;quot;body&amp;quot;, :toolbarSet =&amp;gt; &#39;Simple&#39;, :width =&amp;gt; &#39;100%&#39;, :height =&amp;gt; &#39;500px&#39; )%&amp;gt;
+注意fckeditor_textarea的一个参数post必须是action传过来的一个实体类，如果action没有传过来，就会提示出错
+比如我这里用到了post,我的action如下
+def new&amp;lt;br&amp;gt; @post = Post.new&amp;lt;br&amp;gt; end  第二个参数，body对应表单里的字段
+第三个参数toolbarSet=&amp;gt;&amp;ldquo;Simple&amp;rdquo;为工具条风格，这个风格可以在public/javascripts/fckcustom.js文件里面定义（修改后，要关闭浏览器再开才起作用）
+第四、五个参数，代表文本区域的大小
+图片上传
+默认安装后，图片上传不能用，需要修改vendor/plugins/fckeditor/app/controllers/fckeditor_controller.rb文件的upload_file action如下
+def upload_file @new_file = params[:NewFile] @url = upload_directory_path begin ftype = @new_file.content_type.strip if ! MIME_TYPES.include?(ftype) @errorNumber = 202 puts &amp;quot;#{ftype} is invalid MIME type&amp;quot; raise &amp;quot;#{ftype} is invalid MIME type&amp;quot; else path = current_directory_path + &amp;quot;/&amp;quot; + @new_file.</description>
+    </item>
+    
+    <item>
+      <title>ubuntu下arp攻击防御和反击！</title>
+      <link>http://xinlogs.com/post/2009-12-21-defense-arp-attack-on-ubuntu/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-defense-arp-attack-on-ubuntu/</guid>
+      <description>今天在单位，发现有人在用聚生网管和p2p终结者
+在windows下面，可以安装arp防火墙，还可以通过安装同类软件，进行检测。可是我已经转到ubuntu上了，总不能一旦被攻击，就回windows吧。于是上网找了一些关于linux下防止arp攻击的方法。
+第一种方法
+用静态arp.
+这种方法就是通过在 /etc/ethers 建立ip和mac地址对应记录。然后用arp -f来读取记录。这样将网关的mac地址和ip都建立在静态arp文件里。就不容易被arp欺骗了。
+还可以配合关闭arp解析，用ifconfig eth0 -arp
+第二中方法
+采用arping
+babo@babo-laptop:~$ arping Usage: arping [-fqbDUAV] [-c count] [-w timeout] [-I device] [-s source] destination -f : quit on first reply -q : be quiet -b : keep broadcasting, don&#39;t go unicast -D : duplicate address detection mode -U : Unsolicited ARP mode, update your neighbours -A : ARP answer mode, update your neighbours -V : print version and exit -c count : how many packets to send -w timeout : how long to wait for a reply -I device : which ethernet device to use (eth0) -s source : source ip address destination : ask for what ip address 用法举例：比如我的ip 192.</description>
+    </item>
+    
+    <item>
+      <title>一个内存所搜的好用具--Cheat Engine</title>
+      <link>http://xinlogs.com/post/2009-12-21-cheat-engine/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-cheat-engine/</guid>
+      <description>这个工具可以用来查找内存里面的数据。是目前最好的修改游戏软件了，支持查找基地址。不过要想查找出基地址，还是需要一定的汇编能力的。反正我用这个，还没有查找出WOW 2.1.2的基地址。不过国外有个人，用这个工具找到了WOW 1.12.1的了
+可以在google查到这篇文章Defeating DMA: Offsets and Pointers for WoW
+本来打算用这个工具找出基地址，然后重新写挂战场的外挂呢。。。。革命尚未成功，仍需努力呀暴风前夕这个版本里，我开始玩小D了，目前已经60，正在冲荣誉。。。用的还是以前我写的挂机程序，稍微修改了下，比较稳定。</description>
+    </item>
+    
+    <item>
+      <title>一个在windows下很好用的MySQL工具Navicat</title>
+      <link>http://xinlogs.com/post/2009-12-21-navicat/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-navicat/</guid>
+      <description>为了解决中文乱码，我的Mysql都设置了使用utf8编码
+这样一来，使用SQLyog Enterprise查看表里面内容，就都不能正常显示了。可能SQLyog需要设置？反正我没有搞出来。
+不过后来我换用了Navicat 7以后，感觉很好。所有中文内容都可以正确显示
+比mysql front也要强很多。以后我就用这个了 而且支持Linux,windows,mac三个平台。下面是介绍
+PremiumSoft Navicat™ is a powerful MySQL database administration and development tool that is not only sophisticated enough for professional developers, but also easy to learn for new users. With an user-friendly GUI, Navicat™ lets you quickly and easily create, organize, access and share information in a secure and convenient way.  PremiumSoft Navicat supports multiple MySQL server connections which can be connected locally or remotely.</description>
+    </item>
+    
+    <item>
+      <title>一个很好的开源企业内部IM解决方案</title>
+      <link>http://xinlogs.com/post/2009-12-21-opensource-im/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-opensource-im/</guid>
+      <description>今天发现了http://www.igniterealtime.org这个项目首页
+这个项目可以在企业内部架设一台服务器，来完成内部IM功能。客户端可以想QQ或者MSN一样登陆。并且通过服务器上设置GATEWAY功能，还能与MSN等主流软件通讯。
+具体功能还没有测试，不过打算有时间的时候架设下进行试用。</description>
+    </item>
+    
+    <item>
+      <title>修改了一个大战场团排插件 TeamQueue 1.35</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-plugin-teamqueue/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-plugin-teamqueue/</guid>
+      <description>为了让插件排队速度更快.只要和大战场军官对话,就自动进入到&amp;rdquo;首先可用&amp;rdquo;界面等待队长排队了.
+插件下载</description>
+    </item>
+    
+    <item>
+      <title>刷MLD公主,得到了无尽黑暗之忍</title>
+      <link>http://xinlogs.com/post/2009-12-21-dagger/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-dagger/</guid>
+      <description>虽然号被盗了,但是老天却把幸运给了我.让我刷出了
+[无尽黑暗之刃]
+有了这个匕首,可以一次刷ZG 9堆鳄鱼了,简直是FS AOE的极品武器</description>
+    </item>
+    
+    <item>
+      <title>如何向万网的Mysql数据库导入数据</title>
+      <link>http://xinlogs.com/post/2009-12-21-mysql-import/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-mysql-import/</guid>
+      <description>昨天单位由一个网站，要放到万网的虚拟主机去。 网站是jsp写的，程序好导。直接ftp过去就可以了。
+可是mysql的数据库怎么导呢？
+我先用
+mysqldump database_name&amp;gt;database_name.sql  然后把这个database_name.sql下载下来。
+再给虚拟主机空间上传一个phpmyadmin来做数据库管理用。这样就可以使用phpmyadmin导入数据了。
+如果网站数据小，这样就ok了。可是我的database_name.sql有60M
+万网空间上的phpmyadmin只能最大支持2M
+于是只能另外想办法。我先导入表格结构吧。
+mysqldump –d database_name&amp;gt;database_name.sql  在phpmyadmin里，选择好数据库后，用导入功能，将database_name.sql导入
+现在有了表结构了，但是每个表都没有数据。我们再继续导入数据。
+我的表里面，除了一个news表格特别大，大约51M，其他都在2M一下。所以我每个表格生成一个txt文件，然后导入到万网的数据库。
+本地进入mysql&amp;gt;提示符后，用以下命令将数据的表格数据导出。
+select * from admin into outfile “/tmp/admin.txt” fields terminated by “|” lines terminated by “@”  上面命令将本地数据库的admin表，导出到/tmp/目录下的admin.txt文件。
+我们有几个表格，就用这个命令导出几个txt文件。
+然后将txt文件用gzip压缩，因为phpmyadmin支持gzip压缩格式的。
+cd /tmp/ gzip admin.txt  最后将压缩的admin.txt.gz下载到本地，用浏览器上传给phpmyadmin导入
+![](
+解决news表格过大问题
+我的news表格有51Ｍ，就算gzip压缩后，还有7M左右，还是不能用phpmyadmin导入。我们可以将news表格的数据切分为多个txt文件，然后保证每个文件gzip后，在2M以内就可以。这个切分就要根据具体表格来判断了。
+我先查询了news表格一共有多少条记录
+select count(*) from news;  返回1477条，表格是51M。压缩后的表格是7M。
+7M/2M=3.5
+1477&amp;frasl;3.5=422条。
+根据上面的计算，只要按照422条一个文件来分割就可以了。为了保险，因为每条记录的大小并不是一样的平均分配，我按照每个文件200条记录来切分。
+select * from news where newId&amp;gt;0 limit 200 into outfile “/tmp/news0.txt” fields terminated by “|” lines terminated by “@”; 然后用  select max(newId) from news where newId&amp;gt;0 limit 200; ```</description>
+    </item>
+    
+    <item>
+      <title>如何建立两个表间的外键</title>
+      <link>http://xinlogs.com/post/2009-12-21-howto-create-foreign-key-on-mysql/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-howto-create-foreign-key-on-mysql/</guid>
+      <description>建立Mysql两个表间的外键,需要满足三个条件
+ 两个表必须是InnoDB表类型 使用在外键关系的域必须为索引型(Index) 使用在外键关系的域必须与数据类型相似  下面举例说明
+我们创建一个班级表和一个学生表,并建立一个外键
+创建班级表
+CREATE TABLE class (id INT NOT NULL AUTO_INCREMENT, classname VARCHAR(50) NOT NULL, PRIMARY KEY(id)) ENGINE=INNODB;  插入班级数据
+INSERT INTO class VALUES (1,&amp;quot;一班&amp;quot;),(2,&amp;quot;二班&amp;quot;),(3,&amp;quot;三班&amp;quot;);  创建学生表
+CREATE TABLE students (id INT(4) NOT NULL, name VARCHAR(50) NOT NULL, FK_class INT(4) NOT NULL, INDEX (FK_class), FOREIGN KEY (FK_class) REFERENCES class (id), PRIMARY KEY(id)) ENGINE=INNODB;  验证外键约束性,我们向students表插入一个学生数据,并让FK_class的值为一个在class表里面不存在的值.
+mysql&amp;gt; INSERT INTO students VALUES (1,&amp;quot;zhang&amp;quot;,5);  马上就会看到Mysql报错
+ERROR 1452 : Cannot add or update a child row: a foreign key constraint fails (`test/students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`FK_class`) REFERENCES `class` (`id`))  以上证明外键可以正常工作了</description>
+    </item>
+    
+    <item>
+      <title>如何快速统计服务器访问量</title>
+      <link>http://xinlogs.com/post/2009-12-21-quick-stats-server-visits/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-quick-stats-server-visits/</guid>
+      <description>最近看了javaeye上面robbin的一篇文章，学习到了很多知识。
+http://robbin.javaeye.com/blog/97287 如何快速统计RoR网站的访问量
+我的服务器是Apache+tomcat的配置，上面跑了几个网站。都是基于apache 虚拟主机配置的。
+apache配置如下
+Include conf/vhost_*.conf  然后每个虚拟主机对应一个配置文件
+例如下面的(一些信息用???代替了，都是域名和姓名等个人信息)
+&amp;lt;VirtualHost *:80&amp;gt; ServerAdmin ???&amp;lt;a href=&amp;quot;mailto:???@???.cn&amp;quot;&amp;gt;@???.cn&amp;lt;/a&amp;gt; DocumentRoot /home/???/www ServerName &amp;lt;a href=&amp;quot;http://www./???.org&amp;quot;&amp;gt;www.???.org&amp;lt;/a&amp;gt; DirectoryIndex index.jsp index.htm ErrorLog logs/abc-error_log CustomLog &amp;quot;| /usr/sbin/rotatelogs /var/log/httpd/abc-access_%Y%m%d.log 86400&amp;quot; common &amp;lt;Location &amp;quot;/*.jsp&amp;quot;&amp;gt; JkUriSet worker ajp13:localhost:8009 &amp;lt;/Location&amp;gt; &amp;lt;/VirtualHost&amp;gt;  这样配置后，就会在/var/log/httpd下面按照虚拟主机名字和日期，每天生成一个访问日志文件
+统计每日动态请求处理总数
+cat /var/log/httpd/abc-access_20081116.log |grep &amp;quot;200 &amp;quot;|wc -l  统计URL的访问频度
+cat /var/log/httpd/abc-access_20081116.log |grep &amp;quot;200 &amp;quot;|awk &#39;{print $7}&#39;|sort|uniq -c  统计时间访问频度
+cat /var/log/httpd/abc-access_20081116.log |grep &amp;quot;200 &amp;quot;|awk &#39;{print $4}&#39;|awk -F : &#39;{print $2}&#39;|sort|uniq -c  以上这些是基于CentOS+apache+tomcat实现的</description>
+    </item>
+    
+    <item>
+      <title>安装和使用xen-shell</title>
+      <link>http://xinlogs.com/post/2009-12-21-install-xen-shell/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-install-xen-shell/</guid>
+      <description>转自：http://www.xen-tools.org/software/xen-shell/install.html
+Installing &amp;amp; using the Xen-Shell
+This shell makes several assumptions in the way that it operates:
+ That you have a Xen 3.x host running. Then Xen host has several guests running. That you don&amp;rsquo;t wish to give your users shell access on the host.  If these assumptions are not valid for your environment then you might find that you have problems.
+Installation
+Download either a release, or a current version of the CVS repository and install it by executing:</description>
+    </item>
+    
+    <item>
+      <title>怎么mount一个xen的img映像。转载</title>
+      <link>http://xinlogs.com/post/2009-12-21-howto-mount-xen-img/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-howto-mount-xen-img/</guid>
+      <description>First you need to find out the partitions and the startsector of partitions:  [root@xen rruban]# file rheltest.img rheltest.img: x86 boot sector, GRand Unified Bootloader (0.94); partition 1: ID=0x83, active, starthead 1, startsector 63, 208782 sectors; partition 2: ID=0x8e, starthead 0, startsector 208845, 3871665 sectors, code offset 0x48  There are 3 partitions inside the image file. The startsector of each partition is also listed. Boot partition will have start sector 63.</description>
+    </item>
+    
+    <item>
+      <title>我冲高督的心得</title>
+      <link>http://xinlogs.com/post/2009-12-21-mage/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-mage/</guid>
+      <description>我在2006年6月就开始冲高督了,然是玩的号是梦之盗帅. 亡灵盗贼(哈哈)
+开始也是一个人到处混,涨得很慢.一周也就10w荣誉,后来通过傻鸟介绍,认识了一个固定队伍.
+固定队伍就是不一样,都是有人带队而且有LM的固定队伍可以一起刷荣誉.在遇到不认识的队伍的时候,才会打. 这里要说一下,有很多人认为刷子不好,可是在我们这里,如果你不刷,真打的荣誉也就够你升到10级勇士的.刷也是很辛苦的,首先加入固定队伍的人,作队长才可以晚上挂机,但是队长每周至少有72小时在线带队.如果不做队长,就要负责拿旗子.拿一天旗子,晚上可以挂一下.基本队里没有不干活的.
+我加入后不久就做了队长&amp;hellip;.其实队长很累&amp;hellip;因为同时刷的有2-3个队伍,你要负责记住对不同队伍的输赢.只有这样,才能稳定的刷下去. 基本这样带队,晚上可以挂着,一周可以有70-100w荣誉.因为每个星期只有2-3人可以到14级高阶督军,所以基本都是让已经到13级督军的朋友拿1-3名,然后按照目前的军衔来分配小队里其他人的排名.这样就为了大家都能用最短时间毕业.
+就这样我跟这个队伍混到了11级,认识了很多朋友,轻舞,心之全泪,天地有雪,正义与邪恶等&amp;hellip;. 11级的时候已经8月初了,因为一直游戏,感觉对不起老婆(陪老婆时间太少).我最终选择了离开.
+一直到1.12跨服战场开放,我才回来. 这次回来还是打算冲高督,但是跨服后60级战场基本都是真打了,我没有了固定队伍,就一个人很难冲上去.而50-59的这个阶段还是在刷.于是我选择了放弃梦之盗帅这个角色,用我的50法师,梦之亡魂刷 跨服战场的开放,让一个人排队刷战场成为可能.
+开始的时候,我用BFA插件配合我自己用VC写的一个小程序刷战场,基本是每个星期哪里双倍荣誉,我就刷哪里.就一个人排队.这样效率很高,
+ 第1周,拿了36W荣誉(没有24小时刷),从侦察兵一下升了4级.而且ALX毕业了 第2周也差不多,升到了6级.因为ALX毕业了,一旦荣誉到30W,我就去挂大战场.在这个星期我大战场也毕业了 第3周,荣誉到30W我就去挂战歌,这个星期我升到了7级(开始可以买勇士装备了) 第4周.我顺利的升级到了8级 第5周,倒霉的星期.9C开始封BFA,并开通了举报系统.我被停封了3小时.不过还是升到了9级.但我开始不太敢挂了 第6周,BFA是不敢用了.我开始开发自己的插件了.  原来配合BFA的小程序,用VC写的,模拟的都是键盘,这样可以把界面隐藏到后台,这要发送按键消息,就能正常刷战场. 现在BFA不能用了,为了不让其他人举报,我从写了那个小程序,通过对屏幕上颜色的判断来获取人物状态和是否进入战场,来采取不同的行为.我可以在3个主城的战场军官那里挂.这样可以很大程度的避免被玩家举报.就这样,我顺利的到了10级(终于勇士了)
+ 第7周,我再次被玩家举报,因为我荣誉高,其他玩家总会想办法让我停下来.不过正好我在屏幕前看着,回答了GM的问话,逃过了这次.这个星期顺利到11级(买下了全部的中将坐骑) 第8周,因为要准备冲14级高督,目前这样挂着,荣誉肯定不够,而且还怕被玩家举报,而我每天要上班,不可能一直人都看着.我又开始想办法了.我开始学习LUA语言,以寻求解决的办法.要是没有这段时间的努力,我不可能后面冲到高督.我居然写了一个可以自动回答GM问题的插件,而且在不知道如何回答的时候,就随面应付一句,然后下线(这样就安全多了.哈哈).所有玩家和我的对话还有GM的问题也多被记录下来.我每天下班,只要看一眼就可以了.这个星期因为一直写回答问题的插件,荣誉少了点,最终11级96% 第9周,新的问题来了,家里的网络开始不稳定了,总是掉线.而我对这个问题没有任何办法&amp;hellip;.最后这个星期我之排名第7升级到了12级53% 第10周,我再次改写了我的程序,让程序判断是否掉线了,一旦掉线,就发出提示声音.这样就可以在最短时间发现掉线了.这个星期顺利到了13级 第11周.因为插件已经开始正常工作了,而且完美的回答了几次问题.让我可以放心的24小时挂了.这个星期我冲了135w荣誉 第12周,稳定的挂了一个排名第一,同时战歌毕业了 第13周,排名第2,13级94% 第14周,排名第一,终于14级毕业了  这次刷高督,一直停留在59级.直到高督毕业,才升的60级.一共用了14周时间.哈哈 期间学习了VC和LUA语言,感觉收获比较大.不过就算我这样一直用程序刷,感觉还是比较累的.要是真打,我肯定不能到14级.
+现在工作比较忙,很少玩了.所以写下这篇文章留作纪念</description>
+    </item>
+    
+    <item>
+      <title>我的高督法师的装备恢复了</title>
+      <link>http://xinlogs.com/post/2009-12-21-mage-recover/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-mage-recover/</guid>
+      <description>今天恢复了高督法师的装备，虽然损失了3500G，但是装备还是给恢复回来了现在装备没有FM了，只有440法伤。。。。以前523知足了。希望大家都用密保卡，省的丢号</description>
+    </item>
+    
+    <item>
+      <title>我的高督被盗了......</title>
+      <link>http://xinlogs.com/post/2009-12-21-mage-be-stolen/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-mage-be-stolen/</guid>
+      <description>07年3月29日,我的高督法式被盗了,同一个账号下还有60的萨满.因为是朋友玩的时候被盗的，我到是没有什么感觉。反正也冲到高督了，该玩的也玩了。ZG鳄鱼,MLD公主也刷了。现在也是该离开的时候了</description>
+    </item>
+    
+    <item>
+      <title>有想恶补三角函数的冲动！</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-xyz/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-xyz/</guid>
+      <description>最近在咕哝魔兽世界的坐标系统，发现这个游戏的坐标系统如下图所示
+游戏的平面坐标为X,Y,用2π代表360度的方向。Z为高度，我们可以不用考虑。现在如果我们知道A点坐标X=2,Y=2 ，B点坐标X=4,Y=3那要想从A点出发到B点，我们的方向应该是多少呢？(目前我就知道Y轴正方向的话，角度为0 。X轴正方向 为π/4=90度)该怎么写这个三角函数得到这个角的的数值呢？</description>
+    </item>
+    
+    <item>
+      <title>第一次安装LFS</title>
+      <link>http://xinlogs.com/post/2009-12-21-first-lfs/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-first-lfs/</guid>
+      <description>在经过了大约40小时左右，我的LFS终于顺利启动了。从内核到系统每一个软件都是自己从源代码编译的，感觉很爽。
+本次安装采用LiveCD 6.3作为宿主系统，在VMware上的一个8G scsi盘上安装。
+首先碰到的问题就是GCC编译出现问题。后来发现是因为我用的liveCD是64位的问题。
+换了liveCD 32位的。问题解决
+第二个问题就是glibc总编译不过去，后来发现是我的Linux-2.6.22.5 API Headers从网上下的版本不对
+我一直是看着LFS BOOK 6.2的中文手册安装的，而用的LiveCD和软件包都是6.3
+6.3里面的这个Linux-2.6.22.5 API Headers需要从Linux-2.6.22.5.tar.bz2里面获取
+建议还是看liveCD启动后/usr/share/LFS-BOOK-6.3目录下的文档，这个文档和liveCD带的软件包配套的。
+或者参考中文的
+手把手教你如何建立自己的Linux系统 第二版 作者：孙海勇
+其他就没有碰到什么大问题了。也就是忘记安装个软件包、或者关机重启后，如何从liveCD恢复到工作状态。
+通过这次安装，让我觉得LFS真的是学习Linux的捷径。而且发现了一个牛人的博客，就是上面的孙海勇 网名 冲天飞豹 http://youbest.cublog.cn/
+博客里面有大量关于构建linux系统的技术文章，而且都是原创。
+而且这次通过安装LFS，也找到了Linux 如何在控制台显示UTF-8中文的办法。原来是要给内核打补丁才可以。
+具体的办法可以看
+内核补丁：字符终端下显示UTF-8字符
+总结 安装是顺利完成了，后面要学习的内容还有很多。比如安装时候的每一个包都包含的什么内容、每一条配置的用途。这些安装手册配置容易，如果没有手册自己弄起来就难了。所以后面的时间，就是自己看文档，消化这些知识了。至少顺利迈出第一步！</description>
+    </item>
+    
+    <item>
+      <title>获取XEN guestOS的images文件</title>
+      <link>http://xinlogs.com/post/2009-12-21-get-xen-guestos-image/</link>
+      <pubDate>Mon, 21 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-get-xen-guestos-image/</guid>
+      <description>我们可以从http://stacklet.com/其实就是原来http://jailtime.org/站点找我们需要的xen image文件
+在2009年的时候，jailtime.org发布了一个新闻
+######May 4th, 2009###### The jailtime project has been relaunched with a new name and site: Stacklet As part of the relaunch all of the distributions currently on jailtime have been upgraded to their latest versions. Also, all of the code for creating the images is now publically available – see http://stacklet.com/ for further details&amp;hellip;. Jailtime will remain online but downloads will probably be turned off eventually as the transition to stacklet proceeds.</description>
+    </item>
+    
+    <item>
+      <title>一款匿名浏览器--XeroBank Browser</title>
+      <link>http://xinlogs.com/post/2009-12-21-xerobank-browser/</link>
+      <pubDate>Mon, 21 Dec 2009 15:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-xerobank-browser/</guid>
+      <description>XeroBank Browser 用来上网，可以很好的隐藏你的ip地址。利用Tor(The Onion Router)可以自动通过多层代理跳转，来隐藏你的IP因为是通过代理的，所以速度肯定要慢一些。但可以访问一些国内封锁的IP地址</description>
+    </item>
+    
+    <item>
+      <title>ubuntu8.04 玩魔兽世界 2.4.3(8606)</title>
+      <link>http://xinlogs.com/post/2009-12-21-wow-on-ubuntu-linux/</link>
+      <pubDate>Mon, 21 Dec 2009 10:05:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-wow-on-ubuntu-linux/</guid>
+      <description>最近一直在用ubuntu 8.04当桌面系统。已经很少用windows了。随着采用ubuntu也就一直没有玩魔兽世界了。
+今天将Windows下的WOW目录直接拷贝到了ubuntu下面。我的wine是用sudo apt-get install默认安装的，没有特殊设置。
+将wow目录拷贝到了用户目录的 .wine/drive_c/Program Files目录下。然后直接双击wow.exe运行。
+这个时候会提示如下画面的错误。
+这个不要紧，我们在启动的时候加入-opengl 参数就可以解决。
+下面这个是成功启动的命令和截图
+wine .wine/drive_c/Program\ Files/World\ of\ Warcraft/Wow.exe -opengl -nosound
+已经成功启动了，感觉还不错。这个是在我IBM R61的笔记本上运行结果。
+下面进入游戏看看速度
+开始的时候，我的运行速度不行。只有可怜的35帧每秒。
+在我关闭了所有特效后，速度到了惊人的100帧每秒。。。这个速度完全可以正常游戏了。
+再看看我桌面右侧的状态cpu 53%占用 内存709.88MB 感觉还可以吧。
+虽然已经AFK了，但是ubuntu能玩魔兽世界，还是让我很开心的。</description>
+    </item>
+    
+    <item>
+      <title>我的网站开通了，www.xinlogs.com.</title>
+      <link>http://xinlogs.com/post/2009-12-19-startup-xinlogs/</link>
+      <pubDate>Sat, 19 Dec 2009 18:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-19-startup-xinlogs/</guid>
+      <description>以前一直在断断续续的写Blog，开始放在百度的空间。网址http://hi.baidu.com/babodx
+后来在09年7月，觉得http://hi.baidu.com/babodx空间的功能太少了，就搬家到了ttp://babodx.spaces.live.com并且注册了xinlogs.com域名。后来就一直关注VPS空间，觉得这个很好，相当于自己有了一台虚拟的服务器，完全可以自己在上面配置各种服务。
+于是在2009年12月18日，我终于决定购买了rashost.com的1款128M内存的VPS，位置在美国的洛杉矶机房。
+价格还算便宜1个月68元。rashost的有点就是不限制流量，而且CPU采用intel至强的。速度也不错
+我选择了CentOS 5.3系统
+CPU信息
+model name : Intel&amp;reg; Xeon&amp;reg; CPU X3220 @ 2.40GHz
+内存信息
+ total used free shared buffers cached Mem: 128 119 8 0 9 67 -/+ buffers/cache: 42 86 Swap: 255 0 255  我的网站采用Nginx+PHP+MySQL+Bo-Blog架设，参考了http://www.s135.com/上的优化方法。
+后面剩下的工作就是如何将以前blog的文章搬家够来了。。。估计够折腾一阵子的。</description>
+    </item>
+    
+    <item>
+      <title>CentOS虚拟化服务的配置</title>
+      <link>http://xinlogs.com/post/2009-12-19-centos-virtualization/</link>
+      <pubDate>Sat, 19 Dec 2009 14:50:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-19-centos-virtualization/</guid>
+      <description>单位到了一台sun的x4450服务器，打算开学前部署好虚拟化服务，给每位带学生实训的老师一台虚拟的windows 2003 Server. 大约需要20台虚拟服务器
+##服务器介绍##
+ 硬件配置： CPU: 4颗 Intel&amp;reg; Xeon&amp;reg; CPU X7460 @ 2.66GHz (每颗6核心，供24核心) 内存: 64G 硬盘: 8块 Vendor: HITACHI Model: H101414SCSUN146G Rev: SA25  ##虚拟方案## 用CentOS 5.3 64bit 作为DOM0，来管理整个虚拟化服务。然后采用hvm方式虚拟20台Windows server 2003。
+##虚拟服务器配置：##
+ CPU：1颗 内存：1G 硬盘：30G  整体结构如下
+在SunFire X4450的硬件上，安装Xen虚拟化服务。所有硬件由Xen内核管理，我们的CentOS 5.3 64bit操作系统跑在Xen内核上面，负责管理以后创建的DOM1到DOMN的多个虚拟服务器。
+##虚拟化服务的安装##
+这个就不具体写了，可以参考我前面的blog或者http://www.howtoforge.com/paravirtualization-with-xen-on-centos-5.3-x86_64-p2
+如果不安装图形界面，在用virt-install安装windows操作系统的时候，需要VNC服务。这样可以远程通过VNC客户端连接来安装，因为ssh的方式没有图形界面。 如果安装了图形界面的CentOS，就很容易了。直接用图形界面的虚拟机管理程序安装即可。
+##GUESTOS的配置## 由于每台虚拟服务器安装后，并没有开启远程服务，所以我们还是需要通过VNC连接登入虚拟服务器。在配置好IP和远程服务后，就可以使用远程桌面登陆了。 在每台虚拟服务器的配置文件里，加入如下语句
+vnc = 2 vncunused = 2 vnclisten = &amp;quot;10.10.15.151&amp;quot; vncpasswd = &amp;quot;password&amp;quot;  注意： password为登陆vnc的密码，根据实际情况设置。vnclisten设置的是主机CentOS的IP
+突破8台虚拟服务器的限制
+默认安装后，CentOS的max_loop最大值是8，这样我们默认只能启动8个虚拟服务器（不过半虚拟的linux好像不受这个影响） 我们需要修改这个参数</description>
+    </item>
+    
+    <item>
+      <title>windows下的拷贝利器teracopy</title>
+      <link>http://xinlogs.com/post/2009-08-02-tearcopy/</link>
+      <pubDate>Sun, 02 Aug 2009 14:30:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-08-02-tearcopy/</guid>
+      <description>周四晚上的时候，300G的硬盘在Ghost的时候，分区表损坏，导致数据全丢失了。
+这两天在不停的拷贝数据，导文件。
+发现windows自带的资源管理器拷贝文件的速度和稳定性都不是很好。
+于是找到了一款很不错的小软件tearcopy
+网站 http://www.codesector.com/teracopy.php
+文件很小，大约1.5M
+拷贝速度很快，我从usb设备拷贝，速度大约23M每秒。&amp;lt;
+建议拷贝多个文件或者大文件，都安装这个小软件。
+下面是具体说明，我就不翻译，大家自己看看吧。很牛，还支持win7
+TeraCopy is a compact program designed to copy and move files at the maximum possible speed, providing the user a lot of features:   Copy files faster. TeraCopy uses dynamically adjusted buffers to reduce seek times. Asynchronous copy speeds up file transfer between two physical hard drives.   Pause and resume file transfers. Pause copy process at any time to free up system resources and continue with a single click.</description>
+    </item>
+    
+    <item>
+      <title>从百度空间转移到spaces live</title>
+      <link>http://xinlogs.com/post/2009-07-17-blog-migrate-to-spaces-live/</link>
+      <pubDate>Fri, 17 Jul 2009 16:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-07-17-blog-migrate-to-spaces-live/</guid>
+      <description>本来打算购买一个在美国的VPS，来自己架设个blog程序用的，但是老婆说我太糟蹋钱了，不让玩。
+只好选择live spaces的25G免费空间了。为了这次转移，我写了一个小程序帮忙。
+现在已经把原来http://hi.baidu.com/babodx的博客内容全部搬到了http://babodx.spaces.live.com/
+而且还申请了一个域名玩，可以直接通过http://www.xinlogs.com/访问
+这次域名是在http://www.namecheap.com/直接用美元买的，据说这样比较保险。
+国内的域名服务商信誉很差。
+转移步骤
+我的想法是先用一个程序把百度空间上，我的博客全部保存到本地。然后在用个程序把保存下来的内容发送到spaces live上，就完成了转移。
+一、将百度空间的博客保存到本地
+首先用程序抓取百度空间的博客内容这个程序并不完全是我自己写的，我参考了很多人的文章和程序。参考如下
+Blog Importer in Ruby
+Blog content migration from MovableType to Typo using XML-RPC
+lsblog改进版本
+根据前人的经验，我写了一个程序，根据用户名抓取百度空间的博客，然后保存为用户名.xml文件文件格式如下
+&amp;lt;baidu_space total=&amp;quot;70&amp;quot; id=&amp;quot;babodx&amp;quot; pagecnt=&amp;quot;7&amp;quot;&amp;gt; &amp;lt;page blogcnt=&amp;quot;10&amp;quot; index=&amp;quot;0&amp;quot;&amp;gt; &amp;lt;item href=&amp;quot;http://hi.baidu.com/babodx/blog/item/fb1ebcb14ea2075d08230218.html&amp;quot;&amp;gt; &amp;lt;date&amp;gt;2009-07-12 00:23&amp;lt;/date&amp;gt; &amp;lt;title&amp;gt;ubuntu server 9.04 终端乱码问题&amp;lt;/title&amp;gt; &amp;lt;category&amp;gt;Linux&amp;lt;/category&amp;gt; &amp;lt;body&amp;gt;&amp;lt;p&amp;gt;安装了ubuntu server 9.04，安装的时候选择了中文环境。&amp;lt;/p&amp;gt; &amp;lt;p&amp;gt;因为server是没有桌面的，发现终端里面显示提示信息，出错信息都变成乱码了。&amp;lt;/p&amp;gt; &amp;lt;p&amp;gt;解决办法&amp;lt;/p&amp;gt; &amp;lt;p&amp;gt;修改/etc/default/locale文件&amp;lt;/p&amp;gt; &amp;lt;p&amp;gt;将zh_CN修改为en_US&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt; &amp;lt;/item&amp;gt;  用ｉｔｅｍ标签来包含每个博客，用date,title,category,body分别代表发表时间、标题、分类、内容。
+RUBY代码主要参考了lsblog的改进版。
+savelog.rb
+只要提供用户名，就可以将全部博客保存为ｘｍｌ文件
+二、将本地保存的xml文件，上传到spaces live空间
+这里遇到很多麻烦，以至最终这部分没有能用程序实现。
+我的想法是用ruby调用metaweblog api接口来发送blog到spaces live空间
+可以参考
+Windows Live Spaces MetaWeblog API
+后来发送简单的文本已经可以实现了。但是问题出在对ｂｏｄｙ的处理，从百度空间抓过来的ｂｏｄｙ是ｈｔｍｌ代码，里面包含了文章和图片的引用。
+如果直接用ＭｅｔａＷｅｂｌｏｇ　ＡＰＩ发送，这些ｈｔｍｌ就直接显示在ｂｌｏｇ上面了，而不是应该有的格式。</description>
+    </item>
+    
+    <item>
+      <title>vista 不能自动发现无线网络的问题解决方法</title>
+      <link>http://xinlogs.com/post/2007-12-14-vista-wireless-problem/</link>
+      <pubDate>Fri, 14 Dec 2007 18:09:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2007-12-14-vista-wireless-problem/</guid>
+      <description>vista 查询无线网路需要设置成和无线路由器匹配的无线标准。否则会不能自己发现无线设备。
+具体办法如下，从intel.com找来的在 Windows Vista* 上设置互联网安全无线连接参考 http://support.intel.com/support/cn/wireless/wlan/sb/CS-025389.htm
+在 Windows Vista* 上配置无线网卡设置
+Windows Vista* 提供多种访问高级网卡设置的方法。
+开始 » 控制面板 » 系统与维护 » 系统 » 设备管理器 » 展开右窗格中的网络适配器 » 高亮显示并右键单击无线网卡 » 属性 »“高级”选项卡
+右键单击桌面上的“我的电脑”图标 » 单击“管理”» 高亮显示“设备管理器”» 展开右窗格中的网络适配器”» 高亮显示并右键单击无线网卡 » 属性 »“高级”选项卡
+开始 » 控制面板 » 网络与互联网 » 网络与共享中心 » 管理无线网络 » 适配器属性 » 配置 »“高级”选项卡
+开始 » 网络 » 网络与共享中心 » 管理无线网络 » 适配器属性 » 配置 »“高级”选项卡
+右键单击“系统托盘”图标（屏幕右下角的 2 个计算机显示器图像）» 网络与共享中心 » 管理无线网络 » 适配器属性 » 配置 »“高级”选项卡</description>
+    </item>
+    
+    <item>
+      <title>Vista 太慢了，决定放弃使用她的念头了</title>
+      <link>http://xinlogs.com/post/2007-04-27-vista-slow/</link>
+      <pubDate>Fri, 27 Apr 2007 13:40:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2007-04-27-vista-slow/</guid>
+      <description>居然1G内存酷睿双核处理器使用起来还是会很慢不知道是我没有优化，或者配置的不对？还是本来就不快？总之放弃了，还是用winxp了，以后成熟些再说</description>
+    </item>
+    
+    <item>
+      <title>解决explorer cpu占用率高的一些办法</title>
+      <link>http://xinlogs.com/post/2007-04-19-resolve-explorer-cpu-occupancy-reate/</link>
+      <pubDate>Thu, 19 Apr 2007 16:07:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2007-04-19-resolve-explorer-cpu-occupancy-reate/</guid>
+      <description>1 将zipfldr.dll注销掉
+regsvr32 c:\windows\system32\zipfldr.dll /u  2 关闭avi预览
+regsvr32 shmedia.dll /u  经过上面两步，应该可以减少explorer的cup占用率了。
+以后如果需要用上面的功能，再按照下面步骤打开
+恢复上面功能
+regsvr32 c:\windows\system32\zipfldr.dll regsvr32 shmedia.dll  </description>
+    </item>
+    
+    <item>
+      <title>www.netcraft.com可以检测网站运行的操作系统和Web Server</title>
+      <link>http://xinlogs.com/post/2007-04-12-netcraft/</link>
+      <pubDate>Thu, 12 Apr 2007 15:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2007-04-12-netcraft/</guid>
+      <description>http://www.netcraft.com/ 可以通过
+What&amp;rsquo;s that site running?
+查询一个网站的服务器使用的什么操作系统,Web服务器用的什么软件.. 感觉很不错</description>
+    </item>
+    
+    <item>
+      <title>Rails下request.raw_post的一些问题</title>
+      <link>http://xinlogs.com/post/2009-12-21-rails-request/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-rails-request/</guid>
+      <description>我在学习Agile Web Development with Rails在第18章 Observers的例子中
+&amp;lt;%=text_field_tag :search%&amp;gt; &amp;lt;%=observe_field( :search, :frequency =&amp;gt; 0.5, :update =&amp;gt; :results, :url =&amp;gt; {:action =&amp;gt; :search})%&amp;gt;  将text_field_tag里面的内容，每间隔0.5就提交给search这个action,然后将结果显示在层
+在search方法里面可以通过request.raw_post获取提交的数据
+def search render:text=&amp;gt;request.raw_post end  问题是上面这样返回的内容，总是在提交的内容后多一个=号
+比如在文本框输入div层显示的就是a=
+后来只能通过把最后2位抹去，来达到正常效果render:text=&amp;gt;request.raw_post.to(request.raw_post.length-2)</description>
+    </item>
+    
+    <item>
+      <title>rails下上传文件并且解决乱码问题</title>
+      <link>http://xinlogs.com/post/2009-12-21-rails-upload-unread/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-rails-upload-unread/</guid>
+      <description>这个问题是我在www.javaeye.com论坛上提出的，并且由mathsfan给出了解决办法
+首先创建一个项目，叫test
+在app目录下的controllers目录下，找到test_controller.rb文件
+添加一个upload的action
+def upload end  然后在view目录下的test目录下，创建一个upload.rhtml文件
+&amp;lt;%=form_tag({:action=&amp;gt;&#39;save&#39;},:multipart=&amp;gt;true)%&amp;gt; &amp;lt;br/&amp;gt;upload your file:&amp;lt;%=file_field(&amp;quot;file&amp;quot;,&amp;quot;file&amp;quot;)%&amp;gt; &amp;lt;br/&amp;gt; &amp;lt;%=submit_tag(&amp;quot;upload&amp;quot;)%&amp;gt; &amp;lt;%=end_form_tag%&amp;gt;  现在访问http://localhost:3000/test/upload，应该可以看到一个上传的界面了。
+不过还没有处理上传后的方法呢，所以还不能实现上传。因为上面的表单是提交给save这个action 的，现在还没有写呢。
+在写save之前，先要完成一些相关的方法
+在application.rb文件里，加入
+def uploadFile(file) #处理上传后的文件保存 if !file.original_filename.empty? #生成一个随机的文件名 @filename=getFileName(file.original_filename) #向dir目录写入文件 File.open(&amp;quot;#{RAILS_ROOT}/public/images/#{@filename}&amp;quot;, &amp;quot;wb&amp;quot;) do |f| f.write(file.read) end #返回文件名称 return @filename end end  def getFileName(filename) #获取文件名 if !filename.nil? return filename end end  现在在test_controller.rb里写出save的action
+def save unless request.get? if filename=uploadFile(params[:file][&#39;file&#39;]) #调用application.rb&amp;lt;/strong&amp;gt;里写的uploadFile对文件保存 render :text=&amp;gt;filename end end end  文件可以正确上传到public/images下 但是中文文件名变为了乱码,但是render :text=&amp;gt;filename返回的名字,并不是乱码.
+###解决办法###</description>
+    </item>
+    
+    <item>
+      <title>rails下使用sqlite3</title>
+      <link>http://xinlogs.com/post/2009-12-21-rails-use-sqlite3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-rails-use-sqlite3/</guid>
+      <description>参考http://wiki.rubyonrails.org/rails/pages/HowtoUseSQLite
+安装SQLite
+SQLite 是一个轻量级的sql风格数据库.可以执行大部分sql92标准SQLite全部安装只有244kb,包括命令行客户端和DLL文件SQLite不用安装服务进程，就像Access数据库一样使用方便安装只需要2个文件
+ SQLite DLL SQLite command-line client for creating tables  添加sqlite3.exe 和sqlite3.dll 到系统的path下，我放在了c:\windows\system32下了
+安装sqlite3-ruby.gem
+gem install sqlite3-rubyAttempting local installation of &#39;sqlite3&#39; Local gem file not found: sqlite3*.gem Attempting remote installation of &#39;sqlite3&#39; Select which gem to install for your platform (i386-mswin32) 1. sqlite3-ruby 1.1.0 (mswin32) 2. sqlite3-ruby 1.1.0 (ruby) 3. sqlite3-ruby 1.0.1 (ruby) ... &amp;gt;  选择 1 安装sqlite3-ruby 1.1.0(mswin32) 现在好像2才是sqlite3-ruby 1.1.0(mswin32),总之选择(mswin32)就对了
+安装图像管理工具（也可以不用，直接用命令行也很方便）http://sqlitebrowser.sourceforge.net/
+创建数据库
+进入项目所在目录，比如我的项目是testsqld:\work\testsql&amp;gt;sqlite db\test.db上面命令就在db目录下，创建了一个test.db数据库</description>
+    </item>
+    
+    <item>
+      <title>ubuntu 8.04升级到8.10</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-804-update-to-810/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-804-update-to-810/</guid>
+      <description>#升级#
+昨天开始作的升级。
+早上到单位，就开始Alt+F2
+在弹出的命令行窗口输入 update-manager -d
+然后就进入了漫长的等待，单位网络那个垃圾。。。。。告诉我42天。。。。。
+一直到下班，下载了900多个文件，一共要下载1300多
+晚上到家继续update-manager -d 发现居然可以接着下载，还以为要重新来呢。家里好点，告诉我3个小时,后来就睡觉了。
+今天早上起来，发现已经下载完成了，开始到安装更新这一步了，弹出个窗口等我确认。
+我点上开始，就洗漱去了。一直到要上班也没有安装完成。（TMD，居然忘记今天星期五，不能开车。还是老婆提醒我，才想起来。）这次我可不敢关机了，怕升级一半，下次进不来系统。直接把本本和上盖子放包里了，下楼打车上班。
+在出租车里，完成了全部更新。关机。
+启动
+到了单位，发现系统总卡在进度条进不去。
+按Alt+F1然后 Alt+F8查看下文字模式的启动信息，发现一直卡在*Configuring network interfaces&amp;hellip;
+这个第一次启动，没有办法（希望有好办法的，告诉下。）我就一直死等呀。。。感觉过了20分钟？？？
+进入系统了，3D显卡驱动不行。运行uname -a查看，内核还在用8.04的2.6.24-21.
+先修改网络吧 sudo gedit /etc/network/interfaces
+将里面的
+auto eth0 iface eth0 inet dhcp auto lo auto wlan0  都注释掉，变成下面样子
+#auto lo iface lo inet loopback #iface eth0 inet dhcp address 10.11.10.164 netmask 255.255.255.0 gateway 10.11.10.254 #nameserver 202.106.0.20 #auto eth0 iface wlan0 inet dhcp wpa-psk 7640768b3d6b31f834b63abc8d2d667ae10f8bc3c41a8e4e87ec2c104d963a1e wpa-driver wext wpa-key-mgmt WPA-PSK wpa-proto WPA wpa-ssid babohome #auto wlan0  接着修改/etc/NetworkManager/nm-system-settings.</description>
+    </item>
+    
+    <item>
+      <title>ubuntu 8.10下同步wm6.1手机</title>
+      <link>http://xinlogs.com/post/2009-12-21-winphone-syncewithubuntu/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-winphone-syncewithubuntu/</guid>
+      <description>参考了
+ http://www.synce.org/moin/SynceWithUbuntu http://hi.baidu.com/john_zhy/blog/item/50e39f317240141febc4af5a.html  我的本本 IBM R61
+系统 ubuntu 8.10从 8.04升级上来的。
+手机 eten X800 wm6.1英文系统
+原来一直不能在ubuntu下面同步手机资料，昨天参考了上面两个帖子，最后成功了。
+1、首先添加源
+sudo gedit /etc/apt/sources.list  在末尾添加
+deb &amp;lt;a href=&amp;quot;http://ppa.launchpad.net/synce/ubuntu&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;http://ppa.launchpad.net/synce/ubuntu&amp;lt;/a&amp;gt; hardy main deb-src &amp;lt;a href=&amp;quot;http://ppa.launchpad.net/synce/ubuntu&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;http://ppa.launchpad.net/synce/ubuntu&amp;lt;/a&amp;gt; hardy main  保存，关闭
+sudo apt-get update  我没有更新源，但是也成功。可能是8.10的缘故
+2、更新usb驱动（仅内核在2.6.24-19之前的，如果比这个新请跳过本步骤）
+sudo rmmod rndis_host cdc_ether usbnet sudo rm /lib/modules/`uname -r`/kernel/drivers/net/usb/{rndis_host,cdc_ether,usbnet}.ko sudo apt-get install usb-rndis-source cdbs sudo module-assistant auto-install usb-rndis sudo apt-get install synce-hal librra0-tools librapi2-tools  因为我的内核是2.6.27-7的，所以跳过了这步。但是我安装了后面的软件包
+sudo apt-get install synce-hal librra0-tools librapi2-tools  3、安装SynCE-GNOME</description>
+    </item>
+    
+    <item>
+      <title>ubuntu 9.04 server 安装VMware Tools解决share folders问题</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-904-install-vmware-tools/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-904-install-vmware-tools/</guid>
+      <description>我的主系统是Winxp在vmware 6.5.2 build-156735下安装的ubuntu server 9.04
+因为安装vmware tools后，可以使用vmware 提供的share folders让winxp的主系统可以将某个目录映射到虚拟的ubuntu系统里。
+我就开始在vmware里面安装vmware tools工具。下面是过程，包括不能用vmhgfs的解决办法
+**安装VMware tools
+安装前，先安装需要的软件包
+apt-get install autoconf automake binutils make cpp gcc linux-headers-$(uname -r)  安装后，在vmware上面选择VM-》Install Vmware Tools
+然后切换到ubuntu server 9.04里，运行mount命令，将Vmware tools的光盘挂载 sudo mount /dev/cdrom /mnt
+拷贝安装VMware Tools需要的安装文件到/tmp目录 sudo cp /mnt/VMwareTools-7.8.5-156735.tar.gz /tmp
+卸载/mnt目录，因为安装的时候，需要在/mnt目录下创建hgfs目录，如果这时候挂载着CDROM，就会导致创建hgfs目录失败。sudo /mnt
+解压安装文件并修改会出现问题的page.c文件
+cd /tmp tar zxvf VMwareTools-7.8.5-156735.tar.gz cd /tmp/vmware-tools-distrib/lib/modules/source&amp;lt;/span&amp;gt; sudo cp ./vmhgfs.tar /tmp/&amp;lt;/span&amp;gt; tar xvf vmhgfs.tar &amp;lt;/span&amp;gt; cd vmhgfs-only/ sudo vi page.c  修改page.c里面867行的一个错误函数，
+page = __grab_cache_page(mapping, index);  将这个函数修改为</description>
+    </item>
+    
+    <item>
+      <title>ubuntu 9.04安装xen</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-904-install-xen/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-904-install-xen/</guid>
+      <description>主要参考下面两旁文章，先贴过来，以后再整理。
+http://oceanobservatories.org/spaces/display/CIDev/Xen+on+Ubuntu+9.04+(Jaunty)
+http://linux.com/community/blogs/Xen-Create-a-Jaunty-DomU-using-xen-create-image.html
+安装xen
+Xen on Ubuntu 9.04 (Jaunty)
+Added by Thomas Im , last edited by Thomas Im on Jun 11, 2009 (view change) Labels: (None) Following applies to Ubuntu 9.04 Jaunty 64-bit installation. Notes taken from rebuild of &amp;lsquo;amoeba&amp;rsquo; development system. Installation sudo apt-get install ubuntu-xen-server # Jaunty Xen package does not include the dom0 Xen kernel so these must be installed separately wget http://security.debian.org/debian-security/pool/updates/main/l/linux-2.6/linux-modules-2.6.26-2-xen-amd64_2.6.26-15lenny3_amd64.deb wget http://security.debian.org/debian-security/pool/updates/main/l/linux-2.6/linux-image-2.6.26-2-xen-amd64_2.6.26-15lenny3_amd64.deb sudo dpkg -i linux-modules-2.</description>
+    </item>
+    
+    <item>
+      <title>ubuntu server 9.04 终端乱码问题</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-console-unread-chinese/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-console-unread-chinese/</guid>
+      <description>安装了ubuntu server 9.04，安装的时候选择了中文环境。
+因为server是没有桌面的，发现终端里面显示提示信息，出错信息都变成乱码了。
+解决办法 修改/etc/default/locale文件
+将zh_CN修改为en_US</description>
+    </item>
+    
+    <item>
+      <title>ubuntu server 9.04显示中文文件</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-904-show-chinese-filename/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-904-show-chinese-filename/</guid>
+      <description>前面提到了用VMware的share folder功能，可以将主机系统的一个目录，自动共享到ubuntu /mnt/hgfs目录下。
+但是winxp的中文目录，到了ubuntu server下面就显示乱码了。
+解决办法
+安装相关软件包
+sudo apt-get install language-pack-zh  配置中文环境
+修改/etc/environment
+sudo vim /etc/environment  将LANG和LANGUAGE内容修改为下面的
+LANG=zh_CN.UTF8&amp;lt;br&amp;gt; LANGUAGE=&amp;quot;zh_CN:zh:en_US:en  修改/etc/default/locale
+sudo vim /etc/default/locale  修改内容如下
+LANG=&amp;quot;zh_CN.UTF-8&amp;quot;&amp;lt;br&amp;gt; LANGUAGE=&amp;quot;zh_CN:zh&amp;quot;  保存后，重启系统。
+现在用putty登陆，还是发现看中文乱码。我们还要继续设置putty才可以。
+设置putty使用utf-8
+putty的Windows-&amp;gt;Translation-&amp;gt;Received data assumed to be in which character set:选择UTF-8
+这样设置后，就可以正确在putty里显示中文了。
+以上这些就可以正常在putty里显示中文了。但是如果你用键盘鼠标从本地登陆ubuntu server，会发现，ubuntu server还是乱码。
+这个问题我查了一些文档，还是没有解决。有的说是console下的字体问题。但是/usr/share/consolefonts里的字体好像没有支持中文的。
+还有说console fonts最多支持256这个字符。。。
+反正最终这个问题没有解决掉。现在在linux自己的控制台里，显示还是乱码
+建议大家如果不是特别需要，其实服务器没有必要采用中文编码的。可以正常显示中文就好了。
+建议默认还是用en_US:UTF-8的好。</description>
+    </item>
+    
+    <item>
+      <title>学习Ruby中......</title>
+      <link>http://xinlogs.com/post/2009-12-21-study-ruby-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-study-ruby-1/</guid>
+      <description>####学习Ruby中&amp;hellip;&amp;hellip;####
+终于拿到了Programming Ruby 中文第2版.开始认真学习Ruby
+不过感觉翻译的不是很好
+而且有网友已经整理了勘误表 http://farm9.staticflickr.com/8527/8509573735_f7c64d2b5c_z.jpg
+我在阅读的时候,也发现了一些翻译的不是很明白的地方
+ 16页 第2章 2.3
+ Ruby的数组(arrays)和散列表(hashes)是被索引的收集.(indexed collections)
+  原文:Ruby&amp;rsquo;s arrays and hashes are indexed collections
+我感觉这句话的意思应该是说:Ruby的数组和哈希表是有(被)索引的集合
+在后面的哈希表里面,也有讲解
+Hashes (some times known as associative arrays, maps,or dictionaries) are similar to arrays in that they are indexed collections of object references. 哈希表(有时也称关系数组,映射或者词典) 和数组的相似之处是他们都是有(被)索引的对象引用的集合
+ 45页 第4章 4.1 倒数第8行  使用这些方法,你可以用数组来实现栈(stack),收集(set),队列(queue),双向队列(dequeue)和先进先出队列(fifo)
+原文:Using these,you can treat arrays as stacks,sets,queues,dequeues,and fifos
+我感觉这里的set应该是集合,就是说可以用数组实现集合</description>
+    </item>
+    
+    <item>
+      <title>试用ubuntu 8.04和LVM动态增加分区</title>
+      <link>http://xinlogs.com/post/2009-12-21-ubuntu-dynamic-resize-lvm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://xinlogs.com/post/2009-12-21-ubuntu-dynamic-resize-lvm/</guid>
+      <description>我在虚拟机VMware里面安装了ubuntu 8.04.
+安装的时候，只是选择了openssh这个服务。安装后感觉系统很干净
+磁盘占用
+/dev/mapper/ubuntu-root 5.6G 321M 5.3G 6% /  系统就用了不到400M
+内存
+ total used free shared buffers cached Mem: 249 39 209 0 3 16  减掉buffers和cached的内容，还有我ssh远程连接的占用。实际系统启动后内存也就需要17M
+LVM
+安装系统的时候，我就选择了整个磁盘启用LVM，采用ubuntu默认分区的方式。
+ubuntu默认分了2个区/sda1和/sda5。sda1用来做/boot，sda5用来做LVM。文件系统都是默认的ext3。
+然后在LVM里面默认建立了2个LV( Logical volume)，一个/dev/ubuntu/root用来做/ ，一个/dev/ubuntu/swap_1用来做swap交换分区。我又手动修改了文件系统，采用reiserfs。
+动态添加/分区大小
+我先添加了一个硬盘，系统识别为sdb
+对这个盘创建分区（LVM可以不用分区的，但是需要动态添加到/分区，所以需要有文件系统，不能添加后格式化/分区吧）
+sudo fdisk /dev/sdb n --&amp;gt;创建分区 t --&amp;gt;修改分区类型为8e w --&amp;gt;保存结果  现在系统可以识别/dev/sdb1这个设备了。
+创建PV(Physical volume)
+sudo pvcreate /dev/sdb1  创建VG(Volume group)
+sudo vgextend ubuntu /dev/sdb1  扩展LV(Logical volume)
+sudo lvextend -L +2G /dev/ubuntu/root&amp;lt;br&amp;gt;  这样就给/dev/ubuntu/root这个设备大小增加了2G。可以通过sudo lvdisply查看 但是这个时候df -h还是没有变化的，需要调整文件系统。</description>
+    </item>
+    
+  </channel>
+</rss>

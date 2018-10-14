@@ -1,0 +1,16 @@
+baseURL = "http://xinlogs.com"
+languageCode = "zh-CN"
+title = "鑫的方向"
+
+
+theme = "maupassant"
+
+[author]
+  name = "dongxin"
+
+[params]
+  author = "dongxin"
+  subtitle = "嗜欲深着，天机浅！"
+  keywords = "linux,运维,devops,python,golang"
+  description = "专注于金融科技，包括但不限于linux、python、Go语言(golang)、项目管理、运维、软件架构等"
+  preserveTaxonomyNames = true
